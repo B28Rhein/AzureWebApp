@@ -1,0 +1,29 @@
+﻿body {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../images/background2.avif");
+    background-repeat: no-repeat;
+    background-size: cover
+}
+
+.additionalText {
+    font-size:20px;
+    color: white;
+    text-shadow: 1px 1px 5px black;
+    width: 33%;
+}
+
+.container {
+    display: grid;
+    grid: auto / auto auto;
+    grid-gap: 10px;
+    background-color: rgba(200, 190, 120, 0.5);
+    padding: 10px;
+}
+
+.item {
+    background-color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    font-size: 30px;
+}
