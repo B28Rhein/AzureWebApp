@@ -5,67 +5,14 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+            integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+            crossorigin="anonymous"
+            defer></script>
+    <script src="~/js/site.js" type="module"></script>
     <title>@ViewData["Title"] - AzureWebpage</title>
 </head>
 <body>
-    <div class="additionalText">
-        Mówi się, że Sun Wukong, zwany Małpim Królem, Wielkim Mędrcem Dorównujęcym niebiosom osiągnął 9 nieśmiertelności
-    </div>
-    <div class="container">
-        <div class="item">
-            nieśmiertelność pierwsza
-        </div>
-        <div class="item">
-            Nauczył się od Puti Zushi zaklęć na nieśmiertelność
-        </div>
-        <div class="item">
-            nieśmiertelność druga
-        </div>
-        <div class="item">
-            Wypisał się z księgi śmiertelnych
-        </div>
-        <div class="item">
-            nieśmiertelność trzecia
-        </div>
-        <div class="item">
-            Zjdał Brzoskwinie niesmiertelności
-        </div>
-        <div class="item">
-            nieśmiertelność czwarta
-        </div>
-        <div class="item">
-            Wypił niebiańskie wino
-        </div>
-        <div class="item">
-            nieśmiertelność piąta
-        </div>
-        <div class="item">
-            Zażył pastylki żywotności
-        </div>
-        <div class="item">
-            nieśmiertelność szósta
-        </div>
-        <div class="item">
-            Gotował się w piecu przez 49 dni
-        </div>
-        <div class="item">
-            nieśmiertelność siódma
-        </div>
-        <div class="item">
-            Zjadł pigułkę nieśmiertelności
-        </div>
-        <div class="item">
-            nieśmiertelność ósma
-        </div>
-        <div class="item">
-            Spożył owoc Ginseng
-        </div>
-        <div class="item">
-            nieśmiertelność dziewiąta
-        </div>
-        <div class="item">
-            Jadł buddyjskie odpowiedniki niebiańskich potraw nieśmiertelności
-        </div>
-    </div>
+    <canvas id="gl-canvas" width="640" height="480"></canvas>
 </body>
 

@@ -2,7 +2,7 @@
     display:flex;
     align-items: center;
     justify-content: center;
-    background-image: url("../images/background2.avif");
+    background-color:white;
     background-repeat: no-repeat;
     background-size: cover
 }
