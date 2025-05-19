@@ -5,35 +5,96 @@
 
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
+import { Tile } from "./Tile.js";
 
+var player;
+var Objects = []
+var projectionMatrix;
+var modelViewMatrix;
+var gl;
 main();
+
 function main() {
     const canvas = document.querySelector("#gl-canvas");
-
-    const gl = canvas.getContext("webgl");
+    
+    gl = canvas.getContext("webgl2");
 
     if (gl === null) {
         alert("unable to initialize webgl. browser or machine may not support it");
         return;
     }
 
+    
+
+    
+    const programInfo = SetUpRenderer(gl);
+
+    
+
+    player = new Tile(0, 0, "../images/player.png", gl, programInfo);
+    Objects.push(player);
+
+
+    Objects.push(new Tile(-5, -3, "../images/table.png", gl, programInfo));
+    Objects.push(new Tile(-4, -3, "../images/chair.png", gl, programInfo));
+
+    document.addEventListener("keydown", function (event) {
+        if (event.defaultPrevented) {
+            return;
+        }
+        switch (event.key) {
+            case "ArrowDown":
+                player.y--;
+                console.log(player.y);
+                break;
+            case "ArrowUp":
+                player.y++;
+                console.log(player.y);
+                break;
+            case "ArrowLeft":
+                player.x--;
+                console.log(player.x);
+                break;
+            case "ArrowRight":
+                player.x++;
+                console.log(player.x);
+                break;
+            case "Escape":
+                ending = true;
+                break;
+            default:
+                break;
+        }
+    })
+    requestAnimationFrame(renderLoop);
+    
+    
+}
+
+function SetUpRenderer(gl) {
     const vsSource = `
         attribute vec4 aVertexPos;
+        attribute vec2 aTexCoord;
+
         uniform mat4 uModelViewMtx;
         uniform mat4 uProjectionMtx;
+
+        varying highp vec2 vTexCoord;
+
         void main() {
             gl_Position = uProjectionMtx * uModelViewMtx * aVertexPos;
+            vTexCoord = aTexCoord;
         }
     `;
 
     const fsSource = `
+        varying highp vec2 vTexCoord;
+        uniform sampler2D uSampler;
+
         void main() {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            gl_FragColor = texture2D(uSampler, vTexCoord);
         }
     `;
-
-    gl.clearColor(0.0, 1.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
 
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
@@ -41,16 +102,48 @@ function main() {
         program: shaderProgram,
         attribLocations: {
             vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPos"),
+            textureCoord: gl.getAttribLocation(shaderProgram, "aTexCoord"),
         },
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMtx"),
             modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMtx"),
+            uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
         },
     };
-    const buffers = initBuffers(gl);
-    drawScene(gl, programInfo, buffers);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    const fieldOfView = (45 * Math.PI) / 180;
+    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+    const zNear = 0.1;
+    const zFar = 100.0;
+    projectionMatrix = mat4.create();
+
+    mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+
+    modelViewMatrix = mat4.create();
+
+    mat4.translate(
+        modelViewMatrix,
+        modelViewMatrix,
+        [-0.0, 0.0, -6.0],
+    );
+
+    return programInfo;
 }
 
+function renderLoop() {
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    for (let i = 0; i < Objects.length; i++) {
+        Objects[i].draw(projectionMatrix, modelViewMatrix);
+    }
+    requestAnimationFrame(renderLoop);
+}
 
 function initShaderProgram(gl, vsSource, fsSource) {
     const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
