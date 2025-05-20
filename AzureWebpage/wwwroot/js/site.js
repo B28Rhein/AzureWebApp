@@ -17,7 +17,9 @@ main();
 
 function main() {
     const canvas = document.querySelector("#gl-canvas");
+
     
+
     gl = canvas.getContext("webgl2");
 
     if (gl === null) {
@@ -45,24 +47,16 @@ function main() {
         }
         switch (event.key) {
             case "ArrowDown":
-                player.y--;
-                player.rotation = 1;
-                console.log(player.y);
+                moveDown();
                 break;
             case "ArrowUp":
-                player.y++;
-                player.rotation = 3;
-                console.log(player.y);
+                moveUp();
                 break;
             case "ArrowLeft":
-                player.x--;
-                player.rotation = 0;
-                console.log(player.x);
+                moveLeft();
                 break;
             case "ArrowRight":
-                player.x++;
-                player.rotation = 2;
-                console.log(player.x);
+                moveRight();
                 break;
             case "Escape":
                 paused = (paused == true) ? false : true;
@@ -137,6 +131,23 @@ function SetUpRenderer(gl) {
 
 function update() {
 
+}
+
+function moveUp() {
+    player.y++;
+    player.rotation = 3;
+}
+function moveRight() {
+    player.x++;
+    player.rotation = 2;
+}
+function moveDown() {
+    player.y--;
+    player.rotation = 1;
+}
+function moveLeft() {
+    player.x--;
+    player.rotation = 0;
 }
 
 function renderLoop() {
