@@ -13,12 +13,16 @@ var player;
 var projectionMatrix;
 var gl;
 var currentRoom;
+var canMove = true;
 main();
 
 function main() {
     const canvas = document.querySelector("#gl-canvas");
 
-    
+    document.getElementById("Up").onclick = moveUp;
+    document.getElementById("Down").onclick = moveDown;
+    document.getElementById("Left").onclick = moveLeft;
+    document.getElementById("Right").onclick = moveRight;
 
     gl = canvas.getContext("webgl2");
 
@@ -134,20 +138,50 @@ function update() {
 }
 
 function moveUp() {
-    player.y++;
-    player.rotation = 3;
+    console.log(canMove);
+    if (canMove == true) {
+        player.y++;
+        player.rotation = 3;
+        MoveCannes();
+    }
+
 }
 function moveRight() {
-    player.x++;
-    player.rotation = 2;
+    console.log(canMove);
+    if (canMove == true) {
+        player.x++;
+        player.rotation = 2;
+        MoveCannes();
+    }
 }
 function moveDown() {
-    player.y--;
-    player.rotation = 1;
+    console.log(canMove);
+    if (canMove == true) {
+        player.y--;
+        player.rotation = 1;
+        MoveCannes();
+    }
 }
 function moveLeft() {
-    player.x--;
-    player.rotation = 0;
+    console.log(canMove);
+    if (canMove == true) {
+        player.x--;
+        player.rotation = 0;
+        MoveCannes();
+    }
+}
+function MoveCannes() {
+    if (canMove) {
+        canMove = false;
+        setTimeout(MoveCannes, 50)
+    }
+    else {
+        canMove = true;
+    }
+}
+
+function interact() {
+    switch(player.rotation)
 }
 
 function renderLoop() {

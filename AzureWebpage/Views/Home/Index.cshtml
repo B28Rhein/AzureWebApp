@@ -4,19 +4,57 @@
 }
 <!DOCTYPE html>
 <head>
-    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
             integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
             crossorigin="anonymous"
             defer></script>
     <script src="~/js/site.js" type="module"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
     <title>@ViewData["Title"] - AzureWebpage</title>
 </head>
 <body>
-    <canvas id="gl-canvas" width="640" height="490"></canvas>
-    <button id="Up">Up</button>
-    <button id="Down">Down</button>
-    <button id="Right">Right</button>
-    <button id="Left">Left</button>
+    <div class="container">
+        <div class="row min-vh-100">
+            <div class="col-sm"></div>
+            <div class="col-sm" style="background-color:black">
+                <canvas id="gl-canvas" width="640" height="490"></canvas>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            #health = #nr/#nr
+                        </div>
+                        <div class="col-sm">
+                            #exp = #nr/#nr
+                        </div>
+                    </div>
+                </div>
+                <div class="d-sm-flex justify-content-center">
+                    <div class="btn-group-vertical" role="group">
+                        <div class="btn-group">
+                            <button class="btn btn-dark btn-lg" disabled></button>
+                            <button class="btn btn-dark btn-lg" id="Up">🢁</button>
+                            <button class="btn btn-dark btn-lg" disabled></button>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-dark btn-lg" id="Left">🢀</button>
+                            <button class="btn btn-dark btn-lg" id="Interact>">○</button>
+                            <button class="btn btn-dark btn-lg" id="Right">🢂</button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-dark btn-lg" disabled></button>
+                            <button class="btn btn-dark btn-lg" id="Down">🢃</button>
+                            <button class="btn btn-dark btn-lg" disabled></button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-sm"></div>
+        </div>
+        
+    </div>
+    
 </body>
 

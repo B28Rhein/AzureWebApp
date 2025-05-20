@@ -18,6 +18,7 @@ class Tile {
         this.gl = gl;
         this.rotation = rotation;
         this.trueScaled = trueScaled;
+        this.blockade = false;
     }
     
     draw(projection) {
@@ -100,6 +101,9 @@ class Tile {
             offset,
         );
         gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+    }
+    interact() {
+        return;
     }
 }
 
