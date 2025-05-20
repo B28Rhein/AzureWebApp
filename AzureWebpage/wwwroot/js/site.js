@@ -6,12 +6,13 @@
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 import { Tile } from "./Tile.js";
+import { Texture } from "./Texture.js";
+import { Room } from "./Room.js";
 
 var player;
-var Objects = []
 var projectionMatrix;
-var modelViewMatrix;
 var gl;
+var currentRoom;
 main();
 
 function main() {
@@ -23,20 +24,20 @@ function main() {
         alert("unable to initialize webgl. browser or machine may not support it");
         return;
     }
-
-    
-
     
     const programInfo = SetUpRenderer(gl);
 
+    let playerTex = new Texture(gl, "../images/player.png");
+    let tableTex = new Texture(gl, "../images/table.png");
+    let chairTex = new Texture(gl, "../images/chair.png");
+
     
 
-    player = new Tile(0, 0, "../images/player.png", gl, programInfo);
-    Objects.push(player);
+    player = new Tile(0, 0, playerTex, gl, programInfo, 0);
 
-
-    Objects.push(new Tile(-5, -3, "../images/table.png", gl, programInfo));
-    Objects.push(new Tile(-4, -3, "../images/chair.png", gl, programInfo));
+    currentRoom = new Room(gl, programInfo, player, projectionMatrix);
+    currentRoom.setTile(new Tile(-4, -3, tableTex, gl, programInfo, 0));
+    currentRoom.setTile(new Tile(-3, -3, chairTex, gl, programInfo, 0));
 
     document.addEventListener("keydown", function (event) {
         if (event.defaultPrevented) {
@@ -45,22 +46,26 @@ function main() {
         switch (event.key) {
             case "ArrowDown":
                 player.y--;
+                player.rotation = 1;
                 console.log(player.y);
                 break;
             case "ArrowUp":
                 player.y++;
+                player.rotation = 3;
                 console.log(player.y);
                 break;
             case "ArrowLeft":
                 player.x--;
+                player.rotation = 0;
                 console.log(player.x);
                 break;
             case "ArrowRight":
                 player.x++;
+                player.rotation = 2;
                 console.log(player.x);
                 break;
             case "Escape":
-                ending = true;
+                paused = (paused == true) ? false : true;
                 break;
             default:
                 break;
@@ -125,23 +130,20 @@ function SetUpRenderer(gl) {
 
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-    modelViewMatrix = mat4.create();
-
-    mat4.translate(
-        modelViewMatrix,
-        modelViewMatrix,
-        [-0.0, 0.0, -6.0],
-    );
+    
 
     return programInfo;
+}
+
+function update() {
+
 }
 
 function renderLoop() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    for (let i = 0; i < Objects.length; i++) {
-        Objects[i].draw(projectionMatrix, modelViewMatrix);
-    }
+    currentRoom.drawRoom(projectionMatrix);
+    player.draw(projectionMatrix);
     requestAnimationFrame(renderLoop);
 }
 
