@@ -8,22 +8,24 @@ import { Texture } from "./Texture.js";
 import { Room } from "./Room.js";
 import { Blockade } from "./Blockade.js";
 import { Inventory } from "./Inventory.js";
+import { Stats } from "./Stats.js";
+import { Door } from "./Door.js";
 
 var player;
 var projectionMatrix;
 var gl;
 var currentRoom;
+var inventory;
+var stats;
+var localisationFile;
+var lang = "en";
 var canMove = true;
 main();
 
-function main() {
+async function main() {
     const canvas = document.querySelector("#gl-canvas");
 
-    document.getElementById("Up").onclick = moveUp;
-    document.getElementById("Down").onclick = moveDown;
-    document.getElementById("Left").onclick = moveLeft;
-    document.getElementById("Right").onclick = moveRight;
-    document.getElementById("Interact").onclick = interact;
+
 
     gl = canvas.getContext("webgl2");
 
@@ -33,8 +35,13 @@ function main() {
     }
     
     const programInfo = SetUpRenderer(gl);
+    setUpButtons();
+    localisationFile = await fetch("./js/languages.json").then((x) => localisationFile = x.json());
 
-    const inventory = new Inventory();
+
+    inventory = new Inventory(showInventory);
+    stats = new Stats(100, 5, 4, 10);
+    showStats();
 
     Room.init(gl);
     Blockade.init(gl);
@@ -47,13 +54,14 @@ function main() {
 
     player = new Tile(0, 0, playerTex, gl, programInfo, 0);
 
-    currentRoom = new Room(gl, programInfo, player, projectionMatrix);
-    currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
-    currentRoom.setTile(new Blockade(-3, -3, chairTex, gl, programInfo, 0));
+    currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3);
+    //currentRoom = new Room(gl, programInfo, player, projectionMatrix);
+    //currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
+    //currentRoom.setTile(new Blockade(-3, -3, chairTex, gl, programInfo, 0));
 
-    currentRoom.placeDoor(2, inventory);
+    //currentRoom.placeDoor(2, inventory);
 
-    currentRoom.placeChest(3, 3, ["key", 2], inventory);
+    //currentRoom.placeChest(3, 3, ["key", 2, "sword", 1, "arrow", 50, "rostbef", 12], inventory);
 
     document.addEventListener("keydown", function (event) {
         if (event.defaultPrevented) {
@@ -82,9 +90,21 @@ function main() {
                 break;
         }
     })
+    localise(lang);
     requestAnimationFrame(renderLoop);
     
     
+}
+
+function setUpButtons() {
+    document.getElementById("Up").onclick = moveUp;
+    document.getElementById("Down").onclick = moveDown;
+    document.getElementById("Left").onclick = moveLeft;
+    document.getElementById("Right").onclick = moveRight;
+    document.getElementById("Interact").onclick = interact;
+    document.getElementById("enBTN").onclick = function () { setLang("en") };
+    document.getElementById("plBTN").onclick = function () { setLang("pl")};
+    document.getElementById("frBTN").onclick = function () { setLang("fr") };
 }
 
 function SetUpRenderer(gl) {
@@ -147,7 +167,28 @@ function SetUpRenderer(gl) {
 }
 
 function update() {
-
+    let tile = currentRoom.getTile(player.x, player.y)
+    if (tile instanceof Door) {
+        currentRoom = tile.room2;
+        switch (tile.rotation) {
+            case 0:
+                player.y = -4;
+                player.x = tile.x;
+                break;
+            case 1:
+                player.y = tile.y;
+                player.x = 6;
+                break;
+            case 2:
+                player.y = 4;
+                player.x = tile.x;
+                break;
+            case 3:
+                player.y = tile.y;
+                player.x = -5;
+                break;
+        }
+    }
 }
 
 function moveUp() {
@@ -231,7 +272,48 @@ function renderLoop() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     currentRoom.drawRoom(projectionMatrix);
     player.draw(projectionMatrix);
+    update();
+    //showInventory();
+    //localise(lang);
     requestAnimationFrame(renderLoop);
+}
+
+function showInventory() {
+    const div = document.getElementById("inventoryView");
+    let inv = inventory.getItems();
+    div.innerHTML = "";
+    inv.forEach((x) => div.innerHTML += `<nobr><a name="translatable" id=#${x[0]}>#${x[0]}</a>: ${x[1]}</nobr>`)
+    localise(lang);
+}
+function showStats() {
+    const div = document.getElementById("statView");
+    div.innerHTML = "";
+    div.innerHTML += `<nobr><a name="translatable" id=#strength>#strength</a>: ${stats.strength}</nobr>`
+    div.innerHTML += `<nobr><a name="translatable" id=#defense>#defense</a>: ${stats.defense}</nobr>`
+    div.innerHTML += `<nobr><a name="translatable" id=#dexterity>#dexterity</a>: ${stats.dexterity}</nobr>`
+    document.getElementById("health").innerText = stats.health;
+    document.getElementById("maxHealth").innerText = stats.maxHealth;
+    document.getElementById("exp").innerText = stats.experience;
+    document.getElementById("maxExp").innerText = stats.toNextLevel;
+    localise(lang);
+}
+
+function setLang(l) {
+    lang = l;
+    localise(lang);
+}
+
+async function localise(lang) {
+    //console.log(localisationFile);
+    let translatables = document.getElementsByName("translatable");
+    translatables.forEach((x) => {
+        if (localisationFile[lang][x.id] != undefined) {
+            x.innerText = localisationFile[lang][x.id]
+        }
+        else {
+            x.innerText = x.id;
+        }
+    })
 }
 
 function initShaderProgram(gl, vsSource, fsSource) {

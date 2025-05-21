@@ -1,6 +1,7 @@
 ﻿class Inventory {
-    constructor() {
+    constructor(inventoryChangeEvent) {
         this.items = new Map();
+        this.inventoryChangeEvent = inventoryChangeEvent;
     }
     addItem(item, count) {
         if (this.items.has(item)) {
@@ -9,15 +10,25 @@
         else {
             this.items.set(item, count);
         }
+        this.inventoryChangeEvent();
     }
     removeItem(item, count) {
-        this.items[item] -= count;
-        if (this.items[item] == 0) {
+        this.items.set(item, this.items.get(item) - count);
+        if (this.items.get(item) == 0) {
             this.items.delete(item);
         }
+        this.inventoryChangeEvent();
     }
     contains(item) {
         return this.items.has(item);
+    }
+    getItems() {
+        let arr = [];
+        let t = this.items.entries();
+        for (let i = 0; i < this.items.size; i += 1) {
+            arr.push(t.next().value);
+        }
+        return arr;
     }
 }
 

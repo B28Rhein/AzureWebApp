@@ -1,0 +1,32 @@
+{
+  "en": {
+    "#outventory": "Inventory",
+    "#health": "Health",
+    "#exp": "Experience",
+    "#stats": "Stats",
+    "#strength": "Strength",
+    "#defense": "Defense",
+    "#dexterity": "Dexterity",
+    "#key": "Key"
+  },
+  "pl": {
+    "#outventory": "Ekwipunek",
+    "#health": "Zdrowie",
+    "#exp": "Doświadczenie",
+    "#stats": "Statystyki",
+    "#strength": "Siła",
+    "#defense": "Obrona",
+    "#dexterity": "Zręczność",
+    "#key": "Klucz"
+  },
+  "fr": {
+    "#outventory": "Inventaire",
+    "#health": "Vie",
+    "#exp": "Expérience",
+    "#stats": "Statistiques",
+    "#strength": "Force",
+    "#defense": "Défense",
+    "#dexterity": "Dextérité",
+    "#key": "Clé"
+  }
+}

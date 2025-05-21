@@ -15,21 +15,29 @@
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
     <title>@ViewData["Title"] - AzureWebpage</title>
 </head>
-<body>
-    <div class="container">
+<body style="height:100%">
+    <div class="container-fluid h-100">
         <div class="row min-vh-100">
-            <div class="col-sm"></div>
-            <div class="col-sm" style="background-color:black">
+            <div class="col-sm bg-dark d-flex flex-column">
+                <a name="translatable" id="#outventory">#outventory</a>
+                <div class="row ms-4 mt-4 flex-grow-1 flex-column" id="inventoryView">
+                </div>
+                <a name="translatable" id="#stats">#stats</a>
+                <div class="row ms-4 flex-grow-1 flex-column" id="statView">
+                </div>
+            </div>
+            <div class="col-sm bg-black">
                 <canvas id="gl-canvas" width="640" height="490"></canvas>
                 <div class="container">
                     <div class="row">
                         <div class="col-sm">
-                            #health = #nr/#nr
+                            <a id="#health" name="translatable">#health</a> = <a id="health"></a>/<a id="maxHealth"></a>
                         </div>
                         <div class="col-sm">
-                            #exp = #nr/#nr
+                            <a id="#exp" name="translatable">#exp</a> = <a id="exp"></a>/<a id="maxExp"></a>
                         </div>
                     </div>
+                    
                 </div>
                 <div class="d-sm-flex justify-content-center">
                     <div class="btn-group-vertical" role="group">
@@ -53,7 +61,11 @@
                 </div>
                 
             </div>
-            <div class="col-sm"></div>
+            <div class="col-sm bg-dark">
+                <button class="btn-light" id="plBTN">Polish</button>
+                <button class="btn-light" id="enBTN">English</button>
+                <button class="btn-light" id="frBTN">French</button>
+            </div>
         </div>
         
     </div>
