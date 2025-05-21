@@ -1,22 +1,38 @@
 ﻿import { Tile } from "./Tile.js";
 import { Texture } from "./Texture.js";
-
+import { Border } from "./Border.js";
+import { Door } from "./Door.js";
 class Room {
+    static doorTex;
+    static borderTex;
+    static emptyTex;
+    static init(gl) {
+        Room.doorTex = new Texture(gl, "../images/door.png");
+        Room.borderTex = new Texture(gl, "../images/border.png");
+        Room.emptyTex = new Texture(gl, "../images/empty.png");
+    }
     constructor(gl, programInfo, player, projection) {
-        this.emptyTex = new Texture(gl, "../images/empty.png");
-        this.borderTex = new Texture(gl, "../images/border.png");
         this.tiles = [];
         for (let i = 0; i < 155; i++) {
-            this.tiles.push(new Tile((i % 14) - 6, Math.floor(i / 14) - 5, (i < 14 || i % 14 == 0 || i % 14 == 13 || i > 140) ? this.borderTex : this.emptyTex, gl, programInfo, 0, true));
+            if ((i < 14 || i % 14 == 0 || i % 14 == 13 || i > 140)) {
+                this.tiles.push(new Border((i % 14) - 6, Math.floor(i / 14) - 5, Room.borderTex, gl, programInfo, 0, true, (i < 14 || i >= 140) ? (i % 14 == 0 || i % 14 == 13) ? [0.5, 0.5, 1] : [1, 0.5, 1] : [0.5, 1, 1]));
+            } else {
+                this.tiles.push(new Tile((i % 14) - 6, Math.floor(i / 14) - 5, Room.emptyTex, gl, programInfo, 0, true));
+            }
             this.tiles[i].draw(projection)
         }
         this.player = player;
+        this.gl = gl;
+        this.programInfo = programInfo;
     }
     setTile(tile) {
         this.tiles[(tile.y + 5) * 14 + (tile.x+6)] = tile;
     }
-    removePlayer() {
-
+    getTile(x, y) {
+        return this.tiles[(y + 5) * 14 + (x + 6)]
+    }
+    checkBlockage(x, y) {
+        return this.tiles[(y + 5) * 14 + (x + 6)].blockade;
     }
 
     drawRoom(projection) {
@@ -25,6 +41,23 @@ class Room {
                 x.draw(projection);
             }
         });
+    }
+    placeDoor(side) {
+        switch (side) {
+            case 0:
+                this.setTile(new Door(-6, 0, Room.doorTex, this.gl, this.programInfo, 1, true));
+                break;
+            case 1:
+                this.setTile(new Door(0, -5, Room.doorTex, this.gl, this.programInfo, 2, true));
+                break;
+            case 2:
+                this.setTile(new Door(7, 0, Room.doorTex, this.gl, this.programInfo, 3, true));
+                break;
+            case 3:
+                this.setTile(new Door(0, 5, Room.doorTex, this.gl, this.programInfo, 0, true));
+                break;
+
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿import { initBuffers } from "./init-buffers.js"
 import {Texture } from "./Texture.js"
 class Tile {
-    constructor(x, y, tex, gl, programInfo, rotation, trueScaled) {
+    constructor(x, y, tex, gl, programInfo, rotation, trueScaled, trueRotation=false, additionalScale=[1,1,1]) {
         this.x = x;
         this.y = y;
         this.tex = tex;
@@ -19,6 +19,8 @@ class Tile {
         this.rotation = rotation;
         this.trueScaled = trueScaled;
         this.blockade = false;
+        this.trueRotation = trueRotation;
+        this.additionalScale = additionalScale;
     }
     
     draw(projection) {
@@ -27,19 +29,20 @@ class Tile {
         mat4.translate(
             model,
             model,
-            [-0.0, 0.0, -6.0],
+            [-0.0, 0.0, -7.3],
         );
 
         mat4.translate(model, model, [this.x-0.5, this.y, -6]);
-        if (this.rotation === 2 || this.rotation === 1) {
+        if ((this.rotation === 2 || this.rotation === 1) && !this.trueRotation) {
             mat4.rotate(model, model, Math.PI, [0, 1, 0]);
         }
-        if(this.rotation != 2) {
+        if(this.rotation != 2 || this.trueRotation) {
             mat4.rotate(model, model, this.rotation * 90 * Math.PI / 180, [0, 0, 1]);
         }
         if (!this.trueScaled) {
             mat4.scale(model, model, [0.8, 0.8, 1]);
         }
+        mat4.scale(model, model, this.additionalScale)
         this.setPositionAttribute(this.gl, this.buffers, this.programInfo);
         this.setTextureAttribute(this.gl, this.buffers, this.programInfo);
         this.gl.useProgram(this.programInfo.program);
@@ -102,7 +105,8 @@ class Tile {
         );
         gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
     }
-    interact() {
+    tileInteraction() {
+        //this.tex = new Texture(this.gl, "../images/border.png");
         return;
     }
 }

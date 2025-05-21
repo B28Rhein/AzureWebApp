@@ -3,11 +3,10 @@
 
 // Write your JavaScript code.
 
-import { initBuffers } from "./init-buffers.js";
-import { drawScene } from "./draw-scene.js";
 import { Tile } from "./Tile.js";
 import { Texture } from "./Texture.js";
 import { Room } from "./Room.js";
+import { Blockade } from "./Blockade.js";
 
 var player;
 var projectionMatrix;
@@ -23,6 +22,7 @@ function main() {
     document.getElementById("Down").onclick = moveDown;
     document.getElementById("Left").onclick = moveLeft;
     document.getElementById("Right").onclick = moveRight;
+    document.getElementById("Interact").onclick = interact;
 
     gl = canvas.getContext("webgl2");
 
@@ -33,6 +33,9 @@ function main() {
     
     const programInfo = SetUpRenderer(gl);
 
+    Room.init(gl);
+    Blockade.init(gl);
+
     let playerTex = new Texture(gl, "../images/player.png");
     let tableTex = new Texture(gl, "../images/table.png");
     let chairTex = new Texture(gl, "../images/chair.png");
@@ -42,8 +45,13 @@ function main() {
     player = new Tile(0, 0, playerTex, gl, programInfo, 0);
 
     currentRoom = new Room(gl, programInfo, player, projectionMatrix);
-    currentRoom.setTile(new Tile(-4, -3, tableTex, gl, programInfo, 0));
-    currentRoom.setTile(new Tile(-3, -3, chairTex, gl, programInfo, 0));
+    currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
+    currentRoom.setTile(new Blockade(-3, -3, chairTex, gl, programInfo, 0));
+
+    currentRoom.placeDoor(0);
+    currentRoom.placeDoor(1);
+    currentRoom.placeDoor(2);
+    currentRoom.placeDoor(3);
 
     document.addEventListener("keydown", function (event) {
         if (event.defaultPrevented) {
@@ -61,6 +69,9 @@ function main() {
                 break;
             case "ArrowRight":
                 moveRight();
+                break;
+            case " ":
+                interact(programInfo);
                 break;
             case "Escape":
                 paused = (paused == true) ? false : true;
@@ -138,34 +149,48 @@ function update() {
 }
 
 function moveUp() {
-    console.log(canMove);
+    //console.log(canMove);
     if (canMove == true) {
-        player.y++;
+        if (player.rotation == 3) {
+            if (!currentRoom.checkBlockage(player.x, player.y + 1))
+                player.y++;
+        }   
         player.rotation = 3;
         MoveCannes();
     }
 
 }
 function moveRight() {
-    console.log(canMove);
+    //console.log(canMove);
     if (canMove == true) {
-        player.x++;
+        if (player.rotation == 2) {
+            if (!currentRoom.checkBlockage(player.x + 1, player.y))
+                player.x++;
+        }
         player.rotation = 2;
         MoveCannes();
     }
 }
 function moveDown() {
-    console.log(canMove);
+    //console.log(canMove);
     if (canMove == true) {
-        player.y--;
+        if (player.rotation == 1) {
+            if (!currentRoom.checkBlockage(player.x, player.y - 1))
+                player.y--;
+
+        }
         player.rotation = 1;
         MoveCannes();
     }
 }
 function moveLeft() {
-    console.log(canMove);
+    //console.log(canMove);
     if (canMove == true) {
-        player.x--;
+        if (player.rotation == 0) {
+            if (!currentRoom.checkBlockage(player.x - 1, player.y))
+                player.x--;
+
+        }
         player.rotation = 0;
         MoveCannes();
     }
@@ -180,8 +205,23 @@ function MoveCannes() {
     }
 }
 
-function interact() {
-    switch(player.rotation)
+function interact(programInfo) {
+    switch (player.rotation) {
+        case 0:
+            currentRoom.getTile(player.x - 1, player.y).tileInteraction();
+            break;
+        case 1:
+            currentRoom.getTile(player.x, player.y-1).tileInteraction();
+            break;
+        case 2:
+            currentRoom.getTile(player.x + 1, player.y).tileInteraction();
+            break;
+        case 3:
+            currentRoom.getTile(player.x, player.y + 1).tileInteraction();
+            break;
+        default:
+            break;
+    }
 }
 
 function renderLoop() {
