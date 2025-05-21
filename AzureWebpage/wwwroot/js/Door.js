@@ -6,7 +6,7 @@ class Door extends Tile {
         super(x, y, tex, gl, programInfo, rotation, trueScaled);
         this.locked = locked;
         this.inv = inventory;
-        this.blockade = true;
+        this.blockade = (locked ? true : false);
         this.trueRotation = true;
         this.room1 = room1;
         this.room2 = room2;

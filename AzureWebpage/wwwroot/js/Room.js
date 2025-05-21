@@ -30,7 +30,7 @@ class Room {
         Room.genRandomFurnitures(gl, programInfo, newRoom);
 
         if (neighbour != -1) {
-            newRoom.placeDoor(neighbour, inventory, neighbourRoom);
+            newRoom.placeDoor(neighbour, inventory, neighbourRoom, false);
         }
 
         if (!isFinal) {
@@ -48,7 +48,8 @@ class Room {
                     projection,
                     inventory,
                     roomCounter - 1,
-                    (4 - newDoorSide) % 2 == 0 ? (newDoorSide == 2 ? 0 : 2) : 4 - newDoorSide, this));
+                    (4 - newDoorSide) % 2 == 0 ? (newDoorSide == 2 ? 0 : 2) : 4 - newDoorSide, newRoom),
+            true);
         }
         newRoom.setTile(new Container(2, 2, Room.bagTex, Room.openedBagTex, gl, programInfo, 0, false, ["key", 1], inventory, false));
         return newRoom;
@@ -111,19 +112,19 @@ class Room {
 
     
 
-    placeDoor(side, inventory, room) {
+    placeDoor(side, inventory, room, locked) {
         switch (side) {
             case 0:
-                this.setTile(new Door(-6, 0, Room.doorTex, this.gl, this.programInfo, 1, true, inventory, true, this, room));
+                this.setTile(new Door(-6, 0, Room.doorTex, this.gl, this.programInfo, 1, true, inventory, locked, this, room));
                 break;
             case 1:
-                this.setTile(new Door(0, -5, Room.doorTex, this.gl, this.programInfo, 2, true, inventory, true, this, room));
+                this.setTile(new Door(0, -5, Room.doorTex, this.gl, this.programInfo, 2, true, inventory, locked, this, room));
                 break;
             case 2:
-                this.setTile(new Door(7, 0, Room.doorTex, this.gl, this.programInfo, 3, true, inventory, true, this, room));
+                this.setTile(new Door(7, 0, Room.doorTex, this.gl, this.programInfo, 3, true, inventory, locked, this, room));
                 break;
             case 3:
-                this.setTile(new Door(0, 5, Room.doorTex, this.gl, this.programInfo, 0, true, inventory, true, this, room));
+                this.setTile(new Door(0, 5, Room.doorTex, this.gl, this.programInfo, 0, true, inventory, locked, this, room));
                 break;
 
         }
