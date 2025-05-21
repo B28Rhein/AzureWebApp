@@ -7,6 +7,7 @@ import { Tile } from "./Tile.js";
 import { Texture } from "./Texture.js";
 import { Room } from "./Room.js";
 import { Blockade } from "./Blockade.js";
+import { Inventory } from "./Inventory.js";
 
 var player;
 var projectionMatrix;
@@ -33,6 +34,8 @@ function main() {
     
     const programInfo = SetUpRenderer(gl);
 
+    const inventory = new Inventory();
+
     Room.init(gl);
     Blockade.init(gl);
 
@@ -48,10 +51,9 @@ function main() {
     currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
     currentRoom.setTile(new Blockade(-3, -3, chairTex, gl, programInfo, 0));
 
-    currentRoom.placeDoor(0);
-    currentRoom.placeDoor(1);
-    currentRoom.placeDoor(2);
-    currentRoom.placeDoor(3);
+    currentRoom.placeDoor(2, inventory);
+
+    currentRoom.placeChest(3, 3, ["key", 2], inventory);
 
     document.addEventListener("keydown", function (event) {
         if (event.defaultPrevented) {

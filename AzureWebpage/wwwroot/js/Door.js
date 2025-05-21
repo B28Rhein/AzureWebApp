@@ -14,6 +14,9 @@ class Door extends Tile {
             this.locked = false;
             console.log(this.locked);
         }
+        else {
+            console.log("locked");
+        }
         return;
     }
 }

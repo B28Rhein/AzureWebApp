@@ -17,6 +17,8 @@
         }
     }
     contains(item) {
-        return this.items[item].has(item);
+        return this.items.has(item);
     }
 }
+
+export { Inventory };
