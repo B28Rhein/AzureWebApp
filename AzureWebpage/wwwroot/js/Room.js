@@ -4,6 +4,7 @@ import { Border } from "./Border.js";
 import { Door } from "./Door.js";
 import { Container } from "./Container.js";
 import { Blockade } from "./Blockade.js";
+import { Random } from "./Random.js";
 class Room {
     static doorTex;
     static borderTex;
@@ -36,7 +37,7 @@ class Room {
         if (!isFinal) {
             let newDoorSide;
             do {
-                newDoorSide = Room.randomInteger(0, 3);
+                newDoorSide = Random.randomInteger(0, 3);
             } while (newDoorSide == neighbour);
             newRoom.placeDoor(
                 newDoorSide,
@@ -55,18 +56,18 @@ class Room {
         return newRoom;
     }
     static genRandomFurnitures(gl, programInfo, newRoom) {
-        let funitureCount = Room.randomInteger(1, 5);
+        let funitureCount = Random.randomInteger(1, 5);
         for (let i = 0; i < funitureCount; i++) {
-            let x = Room.randomInteger(-4, 5);
-            let y = Room.randomInteger(-3, 3);
-            let t = Room.randomInteger(0, 1);
+            let x = Random.randomInteger(-4, 5);
+            let y = Random.randomInteger(-3, 3);
+            let t = Random.randomInteger(0, 1);
             if (!(newRoom.getTile(x, y) instanceof Blockade) && (x != 0 || y != 0)) {
                 switch (t) {
                     case 0:
-                        newRoom.setTile(new Blockade(x, y, Room.chairTex, gl, programInfo, Room.randomInteger(0, 3), false));
+                        newRoom.setTile(new Blockade(x, y, Room.chairTex, gl, programInfo, Random.randomInteger(0, 3), false));
                         break;
                     case 1:
-                        newRoom.setTile(new Blockade(x, y, Room.tableTex, gl, programInfo, Room.randomInteger(0, 3), false));
+                        newRoom.setTile(new Blockade(x, y, Room.tableTex, gl, programInfo, Random.randomInteger(0, 3), false));
                         break;
                 }
             }
@@ -75,9 +76,7 @@ class Room {
             }
         }
     }
-    static randomInteger(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+
     constructor(gl, programInfo, player, projection) {
         this.tiles = [];
         for (let i = 0; i < 155; i++) {

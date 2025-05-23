@@ -1,5 +1,5 @@
 ﻿class Stats {
-    constructor(maxHealth, strength, dexterity, defense, changeStatsEvent) {
+    constructor(maxHealth, strength, dexterity, defense, changeStatsEvent, type) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.level = 1;
@@ -9,6 +9,8 @@
         this.dexterity = dexterity;
         this.defense = defense;
         this.changeStatsEvent = changeStatsEvent;
+        this.type = type;
+        this.changeStatsEvent();
     }
     levelUp() {
         this.maxHealth += 20;
@@ -20,6 +22,7 @@
         this.dexterity += 2;
         this.toNextLevel += 100;
         this.changeStatsEvent();
+        this.checkLevelUp();
     }
     changeHealth(amount) {
         this.health += amount;

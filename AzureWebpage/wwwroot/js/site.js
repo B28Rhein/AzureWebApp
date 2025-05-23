@@ -40,8 +40,7 @@ async function main() {
 
 
     inventory = new Inventory(showInventory);
-    stats = new Stats(100, 5, 4, 10);
-    showStats();
+    stats = new Stats(100, 5, 4, 10, showStats, "player");
 
     Room.init(gl);
     Blockade.init(gl);

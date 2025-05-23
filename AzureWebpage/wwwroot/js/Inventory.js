@@ -2,6 +2,7 @@
     constructor(inventoryChangeEvent) {
         this.items = new Map();
         this.inventoryChangeEvent = inventoryChangeEvent;
+        this.inventoryChangeEvent();
     }
     addItem(item, count) {
         if (this.items.has(item)) {
