@@ -8,7 +8,7 @@ class LootTable {
         let loot = [];
         for (let i = 0; i < this.items.length; i += 2) {
             let r = Random.randomInteger(1, 100);
-            if (r < this.chances[i / 2]) {
+            if (r <= this.chances[i / 2]) {
                 loot.push(this.items[i]);
                 loot.push(this.items[i + 1]);
             }

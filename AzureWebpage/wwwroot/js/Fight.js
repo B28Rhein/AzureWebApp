@@ -17,7 +17,7 @@ class Fight {
         Fight.chickenTex = new Texture(gl, "../images/chicken_fight.png");
         Fight.fightInfo = document.getElementById("#fightInfo");
     }
-    constructor(gl, tex, programInfo, projection, enemy, player, localisationFunc) {
+    constructor(gl, tex, programInfo, projection, enemy, player, localisationFunc, inventory) {
         this.fightView = new Tile(0.5, 0, tex, gl, programInfo, 0, true, true, [14, 11, 1]);
         this.gl = gl;
         this.programInfo = programInfo;
@@ -29,6 +29,7 @@ class Fight {
         this.fightEnded = true;
         this.localisationFunc = localisationFunc;
         this.enemyTile = enemy;
+        this.inventory = inventory;
     }
     drawFight() {
         this.fightView.draw(this.projection);
@@ -69,6 +70,9 @@ class Fight {
         document.getElementById("fightInfoDiv").hidden = false;
         this.changeInfoText("#fightInfo", "");
         this.turnTaker = this.player;
+        document.getElementById("#attack").disabled = false;
+        document.getElementById("#defend").disabled = false;
+        document.getElementById("#run").disabled = false;
     }
     changeTurn() {
         this.changeInfoText("#fightInfo", "");
@@ -101,10 +105,26 @@ class Fight {
             this.changeInfoText("#enemyAttackFail", "");
         }
         if (r > c) {
-            var damage = 10 * str / def;
+            var damage = Random.randomInteger(5, 15) * str / def;
             damage = Math.round((damage + Number.EPSILON) * 100) / 100
             if (targetStats.isDefending) {
                 damage /= 2;
+            }
+            if (targetStats == this.player ) {
+                if (this.inventory.contains("pants")) {
+                    damage *= 0.75;
+                }
+                if (this.inventory.contains("tunic")) {
+                    damage *= 0.7;
+                }
+            }
+            if (targetStats == this.enemy) {
+                if (this.inventory.contains("sword")) {
+                    damage *= 1.5;
+                }
+                if (this.inventory.contains("dagger")) {
+                    damage *= 1.2;
+                }
             }
             targetStats.changeHealth(-damage);
             if (this.turnTaker === this.player) {

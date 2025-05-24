@@ -1,9 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-import { Tile } from "./Tile.js";
+﻿import { Tile } from "./Tile.js";
 import { Texture } from "./Texture.js";
 import { Room } from "./Room.js";
 import { Blockade } from "./Blockade.js";
@@ -12,6 +7,8 @@ import { Stats } from "./Stats.js";
 import { Door } from "./Door.js";
 import { Enemy } from "./Enemy.js";
 import { Fight } from "./Fight.js";
+
+console.log(this);
 
 var player;
 var projectionMatrix;
@@ -27,6 +24,8 @@ var enemies = [];
 var lang = "en";
 var canMove = true;
 const map = document.querySelector("#gl-canvas");
+const mainInfo = document.getElementById("#mainInfo");
+const addInfo = document.getElementById("#additionalInfo");
 main();
 
 async function main() {
@@ -59,7 +58,7 @@ async function main() {
 
     currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true);
 
-    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, enemies[0], stats, () => { localise(lang)});
+    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, enemies[0], stats, () => { localise(lang)}, inventory);
 
     //currentRoom = new Room(gl, programInfo, player, projectionMatrix);
     //currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
@@ -68,6 +67,9 @@ async function main() {
     //currentRoom.placeDoor(2, inventory);
 
     //currentRoom.placeChest(3, 3, ["key", 2, "sword", 1, "arrow", 50, "rostbef", 12], inventory);
+
+    mainInfo.id = "#explore";
+    addInfo.id = "#empty";
 
     document.addEventListener("keydown", function (event) {
         if (event.defaultPrevented) {
@@ -91,6 +93,15 @@ async function main() {
                 break;
             case "Escape":
                 isPaused = (isPaused == true) ? false : true;
+                if (isPaused) {
+                    mainInfo.id = "#paused";
+                    addInfo.id = "#empty";
+                }
+                else {
+                    mainInfo.id = "#explore";
+                    addInfo.id = "#empty";
+                }
+                localise(lang);
                 break;
             default:
                 break;
@@ -125,6 +136,7 @@ function SetUpRenderer(gl) {
 
         varying highp vec2 vTexCoord;
 
+
         void main() {
             gl_Position = uProjectionMtx * uModelViewMtx * aVertexPos;
             vTexCoord = aTexCoord;
@@ -134,9 +146,10 @@ function SetUpRenderer(gl) {
     const fsSource = `
         varying highp vec2 vTexCoord;
         uniform sampler2D uSampler;
+        uniform lowp vec4 Color;
 
         void main() {
-            gl_FragColor = texture2D(uSampler, vTexCoord);
+            gl_FragColor = texture2D(uSampler, vTexCoord) * Color;
         }
     `;
 
@@ -147,11 +160,13 @@ function SetUpRenderer(gl) {
         attribLocations: {
             vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPos"),
             textureCoord: gl.getAttribLocation(shaderProgram, "aTexCoord"),
+            vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor"),
         },
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMtx"),
             modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMtx"),
             uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
+            Color: gl.getUniformLocation(shaderProgram, "Color"),
         },
     };
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -201,6 +216,9 @@ function update() {
     if (tile instanceof Enemy) {
         
         inFight = true;
+        mainInfo.id = "#fight";
+        addInfo.id = "#" + tile.stats.type;
+        localise(lang);
         fight.newFight(tile);
     }
 }
@@ -211,7 +229,7 @@ function moveEnemies() {
 
 function moveUp() {
     //console.log(canMove);
-    if (canMove == true) {
+    if (canMove == true && !isPaused) {
         if (player.rotation == 3) {
             if (!currentRoom.checkBlockage(player.x, player.y + 1))
                 player.y++;
@@ -223,7 +241,7 @@ function moveUp() {
 }
 function moveRight() {
     //console.log(canMove);
-    if (canMove == true) {
+    if (canMove == true && !isPaused) {
         if (player.rotation == 2) {
             if (!currentRoom.checkBlockage(player.x + 1, player.y))
                 player.x++;
@@ -234,7 +252,7 @@ function moveRight() {
 }
 function moveDown() {
     //console.log(canMove);
-    if (canMove == true) {
+    if (canMove == true && !isPaused) {
         if (player.rotation == 1) {
             if (!currentRoom.checkBlockage(player.x, player.y - 1))
                 player.y--;
@@ -246,7 +264,7 @@ function moveDown() {
 }
 function moveLeft() {
     //console.log(canMove);
-    if (canMove == true) {
+    if (canMove == true && !isPaused) {
         if (player.rotation == 0) {
             if (!currentRoom.checkBlockage(player.x - 1, player.y))
                 player.x--;
@@ -301,6 +319,21 @@ function renderLoop() {
     else {
         fight.drawFight();
         inFight = !fight.fightEnded;
+        if (fight.playerEscaped == true) {
+            let t;
+            let i = 3;
+            do {
+                t = currentRoom.getFreeTileInDistance(i, player.x, player.y);
+                i++;
+            } while (t == undefined);
+            player.x = t.x;
+            player.y = t.y;
+        }
+        if (!inFight) {
+            mainInfo.innerText = "#explore";
+            addInfo.innerText = "";
+            localise(lang);
+        }
     }
     requestAnimationFrame(renderLoop);
 }

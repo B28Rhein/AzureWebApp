@@ -1,7 +1,7 @@
 ﻿import { initBuffers } from "./init-buffers.js"
 import {Texture } from "./Texture.js"
 class Tile {
-    constructor(x, y, tex, gl, programInfo, rotation, trueScaled, trueRotation=false, additionalScale=[1,1,1]) {
+    constructor(x, y, tex, gl, programInfo, rotation, trueScaled, trueRotation=false, additionalScale=[1,1,1], color = [1,1,1,1]) {
         this.x = x;
         this.y = y;
         this.tex = tex;
@@ -21,6 +21,7 @@ class Tile {
         this.blockade = false;
         this.trueRotation = trueRotation;
         this.additionalScale = additionalScale;
+        this.color = color;
     }
     
     draw(projection) {
@@ -61,7 +62,8 @@ class Tile {
         this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex.texture);
         this.gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
-        
+
+        this.gl.uniform4fv(this.programInfo.uniformLocations.Color, this.color);
 
         {
             const offset = 0;
@@ -105,6 +107,23 @@ class Tile {
         );
         gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
     }
+    //setColorAttribute(gl, buffers, programInfo) {
+    //    const numComponents = 4;
+    //    const type = gl.FLOAT;
+    //    const normalize = false;
+    //    const strid = 0;
+    //    const offset = 0;
+    //    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+    //    gl.vertexAttribPointer(
+    //        programInfo.attribLocations.vertexColor,
+    //        numComponents,
+    //        type,
+    //        normalize,
+    //        strid,
+    //        offset,
+    //    );
+    //    gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
+    //}
     tileInteraction() {
         //this.tex = new Texture(this.gl, "../images/border.png");
         return;

@@ -1,9 +1,11 @@
-﻿function initBuffers(gl, positions) {
+﻿function initBuffers(gl, positions, color) {
     const posBuffer = initPosBuffer(gl, positions);
     const texBuffer = initTexBuffer(gl);
+    //const colBuffer = initColorBuffer(gl, color);
     return {
         position: posBuffer,
         texCoord: texBuffer,
+        //color: colBuffer,
     };
 }
 
@@ -33,5 +35,12 @@ function initTexBuffer(gl) {
     );
     return textureCoordBuffer;
 }
+
+//function initColorBuffer(gl, color) {
+//    const colors = color.concat(color.concat(color.concat(color));
+//    const colorBuffer = gl.createBuffer();
+//    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+//    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+//}
 
 export { initBuffers };
