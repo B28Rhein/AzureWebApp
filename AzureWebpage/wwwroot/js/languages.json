@@ -1,6 +1,7 @@
 {
   "en": {
     "#outventory": "Inventory",
+    "#level": "Level",
     "#health": "Health",
     "#exp": "Experience",
     "#stats": "Stats",
@@ -11,6 +12,7 @@
   },
   "pl": {
     "#outventory": "Ekwipunek",
+    "#level": "Poziom",
     "#health": "Zdrowie",
     "#exp": "Doświadczenie",
     "#stats": "Statystyki",
@@ -21,6 +23,7 @@
   },
   "fr": {
     "#outventory": "Inventaire",
+    "#level": "Niveau",
     "#health": "Vie",
     "#exp": "Expérience",
     "#stats": "Statistiques",

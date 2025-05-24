@@ -10,6 +10,8 @@ import { Blockade } from "./Blockade.js";
 import { Inventory } from "./Inventory.js";
 import { Stats } from "./Stats.js";
 import { Door } from "./Door.js";
+import { Enemy } from "./Enemy.js";
+import { Fight } from "./Fight.js";
 
 var player;
 var projectionMatrix;
@@ -18,16 +20,20 @@ var currentRoom;
 var inventory;
 var stats;
 var localisationFile;
+var fight;
+var isPaused = false;
+var inFight = false;
+var enemies = [];
 var lang = "en";
 var canMove = true;
+const map = document.querySelector("#gl-canvas");
 main();
 
 async function main() {
-    const canvas = document.querySelector("#gl-canvas");
 
 
 
-    gl = canvas.getContext("webgl2");
+    gl = map.getContext("webgl2");
 
     if (gl === null) {
         alert("unable to initialize webgl. browser or machine may not support it");
@@ -40,20 +46,21 @@ async function main() {
 
 
     inventory = new Inventory(showInventory);
-    stats = new Stats(100, 5, 4, 10, showStats, "player");
+    stats = new Stats(100, 10, 15, 10, showStats, "player");
 
     Room.init(gl);
     Blockade.init(gl);
+    Enemy.init(gl, enemies, stats, inventory);
+    Fight.init(gl);
 
     let playerTex = new Texture(gl, "../images/player.png");
-    let tableTex = new Texture(gl, "../images/table.png");
-    let chairTex = new Texture(gl, "../images/chair.png");
-
-    
 
     player = new Tile(0, 0, playerTex, gl, programInfo, 0);
 
-    currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3);
+    currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true);
+
+    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, enemies[0], stats, () => { localise(lang)});
+
     //currentRoom = new Room(gl, programInfo, player, projectionMatrix);
     //currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
     //currentRoom.setTile(new Blockade(-3, -3, chairTex, gl, programInfo, 0));
@@ -83,12 +90,14 @@ async function main() {
                 interact(programInfo);
                 break;
             case "Escape":
-                paused = (paused == true) ? false : true;
+                isPaused = (isPaused == true) ? false : true;
                 break;
             default:
                 break;
         }
     })
+    showInventory();
+    showStats();
     localise(lang);
     requestAnimationFrame(renderLoop);
     
@@ -166,6 +175,7 @@ function SetUpRenderer(gl) {
 }
 
 function update() {
+    moveEnemies();
     let tile = currentRoom.getTile(player.x, player.y)
     if (tile instanceof Door) {
         currentRoom = tile.room2;
@@ -188,6 +198,15 @@ function update() {
                 break;
         }
     }
+    if (tile instanceof Enemy) {
+        
+        inFight = true;
+        fight.newFight(tile);
+    }
+}
+
+function moveEnemies() {
+    enemies.forEach((x) => x.enemyMove());
 }
 
 function moveUp() {
@@ -238,7 +257,7 @@ function moveLeft() {
     }
 }
 function MoveCannes() {
-    if (canMove) {
+    if (canMove && !isPaused) {
         canMove = false;
         setTimeout(MoveCannes, 50)
     }
@@ -248,32 +267,41 @@ function MoveCannes() {
 }
 
 function interact(programInfo) {
-    switch (player.rotation) {
-        case 0:
-            currentRoom.getTile(player.x - 1, player.y).tileInteraction();
-            break;
-        case 1:
-            currentRoom.getTile(player.x, player.y-1).tileInteraction();
-            break;
-        case 2:
-            currentRoom.getTile(player.x + 1, player.y).tileInteraction();
-            break;
-        case 3:
-            currentRoom.getTile(player.x, player.y + 1).tileInteraction();
-            break;
-        default:
-            break;
+    if (!isPaused) {
+        switch (player.rotation) {
+            case 0:
+                currentRoom.getTile(player.x - 1, player.y).tileInteraction();
+                break;
+            case 1:
+                currentRoom.getTile(player.x, player.y - 1).tileInteraction();
+                break;
+            case 2:
+                currentRoom.getTile(player.x + 1, player.y).tileInteraction();
+                break;
+            case 3:
+                currentRoom.getTile(player.x, player.y + 1).tileInteraction();
+                break;
+            default:
+                break;
+        }
     }
 }
 
 function renderLoop() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    currentRoom.drawRoom(projectionMatrix);
-    player.draw(projectionMatrix);
-    update();
-    //showInventory();
-    //localise(lang);
+    document.getElementById("controls").hidden = inFight;
+    if (!inFight) {
+        currentRoom.drawRoom(projectionMatrix);
+        player.draw(projectionMatrix);
+        update();
+        //showInventory();
+        //localise(lang);
+    }
+    else {
+        fight.drawFight();
+        inFight = !fight.fightEnded;
+    }
     requestAnimationFrame(renderLoop);
 }
 
@@ -287,6 +315,7 @@ function showInventory() {
 function showStats() {
     const div = document.getElementById("statView");
     div.innerHTML = "";
+    div.innerHTML += `<nobr><a name="translatable" id=#level></a>: ${stats.level}</nobr>`
     div.innerHTML += `<nobr><a name="translatable" id=#strength>#strength</a>: ${stats.strength}</nobr>`
     div.innerHTML += `<nobr><a name="translatable" id=#defense>#defense</a>: ${stats.defense}</nobr>`
     div.innerHTML += `<nobr><a name="translatable" id=#dexterity>#dexterity</a>: ${stats.dexterity}</nobr>`

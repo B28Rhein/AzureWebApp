@@ -2,16 +2,16 @@
     constructor(inventoryChangeEvent) {
         this.items = new Map();
         this.inventoryChangeEvent = inventoryChangeEvent;
-        this.inventoryChangeEvent();
     }
     addItem(item, count) {
         if (this.items.has(item)) {
-            this.items[item] += count;
+            this.items.set(item, this.items.get(item) + count);
         }
         else {
             this.items.set(item, count);
         }
         this.inventoryChangeEvent();
+        console.log(this.items)
     }
     removeItem(item, count) {
         this.items.set(item, this.items.get(item) - count);

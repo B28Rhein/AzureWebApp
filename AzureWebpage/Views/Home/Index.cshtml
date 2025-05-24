@@ -26,21 +26,27 @@
                 <div class="row ms-4 flex-grow-1 flex-column" id="statView">
                 </div>
             </div>
-            <div class="col-sm bg-black">
+            <div class="col-sm bg-black text-center justify-content-center">
                 <canvas id="gl-canvas" width="640" height="490"></canvas>
-                <div class="container">
-                    <div class="row">
+                <div class="container-fluid">
+                    <div class="row text-center" id="fightInfoDiv" hidden>
+                        <nobr><a id="#fightInfo" name="translatable"></a> <a id="fightInfo"></a></nobr>
+                    </div>
+                    <div class="row text-center">
                         <div class="col-sm">
-                            <a id="#health" name="translatable">#health</a> = <a id="health"></a>/<a id="maxHealth"></a>
+                            <a id="#health" name="translatable">#health</a> <a id="health"></a>/<a id="maxHealth"></a>
+                            <div id="enemyHealthDiv" hidden>
+                                <a id="#enemy_health" name="translatable"></a> <a id="enemyHealth"></a>/<a id="maxEnemyHealth"></a>
+                            </div>
                         </div>
                         <div class="col-sm">
-                            <a id="#exp" name="translatable">#exp</a> = <a id="exp"></a>/<a id="maxExp"></a>
+                            <a id="#exp" name="translatable">#exp</a> <a id="exp"></a>/<a id="maxExp"></a>
                         </div>
                     </div>
                     
                 </div>
                 <div class="d-sm-flex justify-content-center">
-                    <div class="btn-group-vertical" role="group">
+                    <div class="btn-group-vertical" role="group" id="controls">
                         <div class="btn-group">
                             <button class="btn btn-dark btn-lg" disabled></button>
                             <button class="btn btn-dark btn-lg" id="Up">🢁</button>
@@ -57,6 +63,11 @@
                             <button class="btn btn-dark btn-lg" id="Down">🢃</button>
                             <button class="btn btn-dark btn-lg" disabled></button>
                         </div>
+                    </div>
+                    <div class="btn-group" role="group" id="fightControls" hidden>
+                        <button class="btn btn-dark btn-lg" id="#attack" name="translatable"></button>
+                        <button class="btn btn-dark btn-lg" id="#defend" name="translatable"></button>
+                        <button class="btn btn-dark btn-lg" id="#run" name="translatable"></button>
                     </div>
                 </div>
                 

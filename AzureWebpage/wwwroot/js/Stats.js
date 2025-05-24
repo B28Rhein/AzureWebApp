@@ -1,5 +1,5 @@
 ﻿class Stats {
-    constructor(maxHealth, strength, dexterity, defense, changeStatsEvent, type) {
+    constructor(maxHealth, strength, dexterity, defense, changeStatsEvent, type, deadEvent) {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
         this.level = 1;
@@ -10,7 +10,8 @@
         this.defense = defense;
         this.changeStatsEvent = changeStatsEvent;
         this.type = type;
-        this.changeStatsEvent();
+        this.isDefending = false;
+        this.deadEvent = deadEvent;
     }
     levelUp() {
         this.maxHealth += 20;
@@ -26,7 +27,14 @@
     }
     changeHealth(amount) {
         this.health += amount;
+        this.health = Math.round((this.health + Number.EPSILON) * 100) / 100;
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
         this.changeStatsEvent();
+        if (this.health < 0) {
+            this.deadEvent();
+        }
     }
     addExp(amount) {
         this.experience += amount;
@@ -37,6 +45,9 @@
         if (this.experience >= this.toNextLevel) {
             this.levelUp();
         }
+    }
+    print() {
+        console.log([this.level, this.maxHealth, this.health, this.strength, this.dexterity, this.defense, this.type]);
     }
 }
 
