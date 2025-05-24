@@ -62,7 +62,7 @@ class Fight {
         this.enemy.deadEvent = () => { this.enemyDead() };
 
         document.getElementById("#attack").onclick = () => { this.attack(this.player, this.enemy); };
-        document.getElementById("#defend").onclick = () => { this.defend() };
+        document.getElementById("#defend").onclick = () => { this.defend(this.player) };
         document.getElementById("#run").onclick = () => { this.run(); };
 
         this.updateEnemyHealth();
@@ -193,6 +193,7 @@ class Fight {
     }
     enemyDead() {
         this.enemyTile.enemyDefeated();
+        player.enemyDefeeted++;
         this.endFight();
     }
     endFight() {

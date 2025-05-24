@@ -52,7 +52,7 @@ class Room {
             [10, 10, 10, 10, 10, 10, 100, 50]
         )
     }
-    static genRoom(gl, programInfo, player, projection, inventory, roomCounter, globalEnemyList, sideTracks, neighbour = -1, neighbourRoom = null, firstRoom = true, mainTrack = true) {
+    static genRoom(gl, programInfo, player, projection, inventory, roomCounter, globalEnemyList, sideTracks, endEvent, neighbour = -1, neighbourRoom = null, firstRoom = true, mainTrack = true) {
         let newRoom = new Room(gl, programInfo, player, projection);
 
         let isFinal = (roomCounter == 0 ? true : false);
@@ -80,6 +80,7 @@ class Room {
                     roomCounter - 1,
                     globalEnemyList,
                     sideTracks,
+                    endEvent,
                     (4 - newDoorSide) % 2 == 0 ? (newDoorSide == 2 ? 0 : 2) : 4 - newDoorSide, newRoom, false, mainTrack),
             true);
         }
@@ -92,7 +93,7 @@ class Room {
                     side = Random.randomInteger(0, 3);
                 } while (side == neighbour || side == newDoorSide || sideDoors.includes(side));
                 let len = Random.randomInteger(0, 3);
-                newRoom.placeDoor(side, inventory, Room.genRoom(gl, programInfo, player, projection, inventory, len, globalEnemyList, false, (4 - side) % 2 == 0 ? (side == 2 ? 0 : 2) : 4 - side, newRoom, false, false), true);
+                newRoom.placeDoor(side, inventory, Room.genRoom(gl, programInfo, player, projection, inventory, len, globalEnemyList, false, null, (4 - side) % 2 == 0 ? (side == 2 ? 0 : 2) : 4 - side, newRoom, false, false), true);
             }
         }
 
@@ -106,6 +107,7 @@ class Room {
 
         if (isBoss) {
             newRoom.setTile(new Blockade(0, 0, new Texture(gl, "../images/star.png"), gl, programInfo, 0, false));
+            newRoom.getTile(0, 0).tileInteraction = endEvent;
         }
 
         //newRoom.setTile(new Container(2, 2, Room.bagTex, Room.openedBagTex, gl, programInfo, 0, false, Room.keyLoot, inventory, false));

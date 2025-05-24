@@ -18,8 +18,10 @@ var inventory;
 var stats;
 var localisationFile;
 var fight;
+var isAlive = true;
 var isPaused = false;
 var inFight = false;
+var hasWon = false;
 var enemies = [];
 var lang = "en";
 var canMove = true;
@@ -45,7 +47,7 @@ async function main() {
 
 
     inventory = new Inventory(showInventory);
-    stats = new Stats(100, 10, 15, 10, showStats, "player");
+    stats = new Stats(100, 10, 15, 10, showStats, "player", () => { playerDead() });
 
     Room.init(gl);
     Blockade.init(gl);
@@ -56,7 +58,8 @@ async function main() {
 
     player = new Tile(0, 0, playerTex, gl, programInfo, 0);
 
-    currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true);
+
+    currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true, () => { gameFinished()});
 
     fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, enemies[0], stats, () => { localise(lang)}, inventory);
 
@@ -92,16 +95,18 @@ async function main() {
                 interact(programInfo);
                 break;
             case "Escape":
-                isPaused = (isPaused == true) ? false : true;
-                if (isPaused) {
-                    mainInfo.id = "#paused";
-                    addInfo.id = "#empty";
+                if (isAlive){
+                    isPaused = (isPaused == true) ? false : true;
+                    if (isPaused) {
+                        mainInfo.id = "#paused";
+                        addInfo.id = "#empty";
+                    }
+                    else {
+                        mainInfo.id = "#explore";
+                        addInfo.id = "#empty";
+                    }
+                    localise(lang);
                 }
-                else {
-                    mainInfo.id = "#explore";
-                    addInfo.id = "#empty";
-                }
-                localise(lang);
                 break;
             default:
                 break;
@@ -189,6 +194,77 @@ function SetUpRenderer(gl) {
     return programInfo;
 }
 
+function playerDead() {
+    mainInfo.id = "#playerDead";
+    addInfo.id = "#empty";
+    isAlive = false;
+    player.rotation = 3;
+}
+
+function gameFinished() {
+    hasWon = true;
+    mainInfo.id = "#gameWon";
+    addInfo.id = countScore();;
+    localise(lang);
+}
+
+function countScore() {
+    let score = 0;
+    score += stats.enemyDefeeted * 5;
+    let items = inventory.getItems();
+    for (let i = 0; i < items.length; i+=2) {
+        switch (items[i]) {
+            case "sword":
+                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                break;
+            case "pants":
+                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                break;
+            case "tunic":
+                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                break;
+            case "dagger":
+                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                break;
+            case "sadlinEar":
+                score += items[i + 1] * 5;
+                break;
+            case "goldCoin":
+                score += items[i + 1] * 10;
+                break;
+            case "silverTrinket":
+                score += items[i + 1] * 30;
+                break;
+            case "slimeGoo":
+                score += items[i + 1] * 4;
+                break;
+            case "bone":
+                score += items[i + 1] * 7;
+                break;
+            case "chickenFeed":
+                score += items[i + 1] * 100;
+                break;
+            case "chickenMeat":
+                score += items[i + 1] * 50;
+                break;
+            case "feather":
+                score += items[i + 1] * 15;
+                break;
+            case "goldenRing":
+                score += items[i + 1] * 20;
+                break;
+            case "healingPot":
+                score += items[i + 1] * 3;
+                break;
+            default:
+                score += items[i + 1];
+                break;
+
+        }
+    }
+    return score;
+}
+
 function update() {
     moveEnemies();
     let tile = currentRoom.getTile(player.x, player.y)
@@ -229,7 +305,7 @@ function moveEnemies() {
 
 function moveUp() {
     //console.log(canMove);
-    if (canMove == true && !isPaused) {
+    if (canMove == true && !isPaused && isAlive && !hasWon) {
         if (player.rotation == 3) {
             if (!currentRoom.checkBlockage(player.x, player.y + 1))
                 player.y++;
@@ -241,7 +317,7 @@ function moveUp() {
 }
 function moveRight() {
     //console.log(canMove);
-    if (canMove == true && !isPaused) {
+    if (canMove == true && !isPaused && isAlive && !hasWon) {
         if (player.rotation == 2) {
             if (!currentRoom.checkBlockage(player.x + 1, player.y))
                 player.x++;
@@ -252,7 +328,7 @@ function moveRight() {
 }
 function moveDown() {
     //console.log(canMove);
-    if (canMove == true && !isPaused) {
+    if (canMove == true && !isPaused && isAlive && !hasWon) {
         if (player.rotation == 1) {
             if (!currentRoom.checkBlockage(player.x, player.y - 1))
                 player.y--;
@@ -264,7 +340,7 @@ function moveDown() {
 }
 function moveLeft() {
     //console.log(canMove);
-    if (canMove == true && !isPaused) {
+    if (canMove == true && !isPaused && isAlive && !hasWon) {
         if (player.rotation == 0) {
             if (!currentRoom.checkBlockage(player.x - 1, player.y))
                 player.x--;
@@ -275,7 +351,7 @@ function moveLeft() {
     }
 }
 function MoveCannes() {
-    if (canMove && !isPaused) {
+    if (canMove) {
         canMove = false;
         setTimeout(MoveCannes, 50)
     }
@@ -285,7 +361,7 @@ function MoveCannes() {
 }
 
 function interact(programInfo) {
-    if (!isPaused) {
+    if (!isPaused && isAlive && !hasWon) {
         switch (player.rotation) {
             case 0:
                 currentRoom.getTile(player.x - 1, player.y).tileInteraction();
@@ -306,34 +382,42 @@ function interact(programInfo) {
 }
 
 function renderLoop() {
+    resizeCanvasToDisplaySize(gl.canvas);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     document.getElementById("controls").hidden = inFight;
-    if (!inFight) {
-        currentRoom.drawRoom(projectionMatrix);
-        player.draw(projectionMatrix);
-        update();
-        //showInventory();
-        //localise(lang);
+    if (!isPaused && isAlive && !hasWon) {
+        if (!inFight) {
+            currentRoom.drawRoom(projectionMatrix);
+            player.draw(projectionMatrix);
+            update();
+            //showInventory();
+            //localise(lang);
+        }
+        else {
+            fight.drawFight();
+            inFight = !fight.fightEnded;
+            if (fight.playerEscaped == true) {
+                let t;
+                let i = 3;
+                do {
+                    t = currentRoom.getFreeTileInDistance(i, player.x, player.y);
+                    i++;
+                } while (t == undefined);
+                player.x = t.x;
+                player.y = t.y;
+            }
+            if (!inFight) {
+                mainInfo.innerText = "#explore";
+                addInfo.innerText = "";
+                localise(lang);
+            }
+        }
     }
     else {
-        fight.drawFight();
-        inFight = !fight.fightEnded;
-        if (fight.playerEscaped == true) {
-            let t;
-            let i = 3;
-            do {
-                t = currentRoom.getFreeTileInDistance(i, player.x, player.y);
-                i++;
-            } while (t == undefined);
-            player.x = t.x;
-            player.y = t.y;
-        }
-        if (!inFight) {
-            mainInfo.innerText = "#explore";
-            addInfo.innerText = "";
-            localise(lang);
-        }
+        currentRoom.drawRoom(projectionMatrix);
+        player.draw(projectionMatrix);
     }
     requestAnimationFrame(renderLoop);
 }
@@ -408,4 +492,22 @@ function loadShader(gl, type, source) {
         return null;
     }
     return shader;
+}
+
+function resizeCanvasToDisplaySize(canvas) {
+    // Lookup the size the browser is displaying the canvas in CSS pixels.
+    const displayWidth = canvas.clientWidth;
+    const displayHeight = canvas.clientHeight;
+
+    // Check if the canvas is not the same size.
+    const needResize = canvas.width !== displayWidth ||
+        canvas.height !== displayHeight;
+
+    if (needResize) {
+        // Make the canvas the same size
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+    }
+
+    return needResize;
 }

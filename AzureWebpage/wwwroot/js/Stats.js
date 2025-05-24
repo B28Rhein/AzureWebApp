@@ -12,6 +12,7 @@
         this.type = type;
         this.isDefending = false;
         this.deadEvent = deadEvent;
+        this.enemiesDefeeted = 0;
     }
     levelUp() {
         this.maxHealth += 20;

@@ -43,6 +43,8 @@
     "#explore": "Exploring",
     "#fight": "Fighting:",
     "#paused": "The game is Paused",
+    "#playerDead": "You Are Dead",
+    "#gameWon": "You won, you have achieved a score of:",
     "#empty": ""
   },
   "pl": {
@@ -89,6 +91,8 @@
     "#explore": "Eksplorujesz",
     "#fight": "Walczysz, Przeciwnik:",
     "#paused": "Gra jest Wstrzymana",
+    "#playerDead": "Zginąłeś",
+    "#gameWon": "Wygrałeś, osiągnąłeś wynik:",
     "#empty": ""
   },
   "fr": {
@@ -135,6 +139,8 @@
     "#explore": "Exploration",
     "#fight": "Combat:",
     "#paused": "Le jeu est en pause",
+    "#playerDead": "Tu es mort",
+    "#gameWon": "Vous avez gagné, vous avez obtenu un score de :",
     "#empty": ""
   }
 }
