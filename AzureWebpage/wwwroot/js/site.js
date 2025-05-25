@@ -54,36 +54,36 @@ function startGame() {
     let invalid = false;
     let min = document.getElementById("#mainSize").min;
     let max = document.getElementById("#mainSize").max;
-    if (mainL == "" || mainL > max || mainL < min) {
+    if (isNaN(mainL) || mainL > max || mainL < min) {
         document.getElementById("#mainSize").style = "border-color:red";
         invalid = true;
     }
     min = document.getElementById("#strCrt").min;
     max = document.getElementById("#strCrt").max;
-    if (str == "" || str > max || str < min) {
+    if (isNaN(str) || str > max || str < min) {
         document.getElementById("#strCrt").style = "border-color:red";
         invalid = true;
     }
     min = document.getElementById("#dexCrt").min;
     max = document.getElementById("#dexCrt").max;
-    if (dex == "" || dex > max || dex < min) {
+    if (isNaN(dex) || dex > max || dex < min) {
         document.getElementById("#dexCrt").style = "border-color:red";
         invalid = true;
     }
     min = document.getElementById("#defCrt").min;
     max = document.getElementById("#defCrt").max;
-    if (def == "" || def > max || def < min) {
+    if (isNaN(def)|| def > max || def < min) {
         document.getElementById("#defCrt").style = "border-color:red";
         invalid = true;
     }
     if (sideT) {
-        sideMaxS = document.getElementById("#maxSideSize").value;
-        sideMinS = document.getElementById("#minSideSize").value;
-        if (sideMaxS == "" || sideMaxS > document.getElementById("#maxSideSize").max || sideMaxS < document.getElementById("#maxSideSize").min) {
+        sideMaxS = parseInt(document.getElementById("#maxSideSize").value);
+        sideMinS = parseInt(document.getElementById("#minSideSize").value);
+        if (isNaN(sideMaxS) || sideMaxS > document.getElementById("#maxSideSize").max || sideMaxS < document.getElementById("#maxSideSize").min) {
             document.getElementById("#maxSideSize").style = "border-color:red";
             invalid = true;
         }
-        if (sideMinS == "" || sideMinS > document.getElementById("#minSideSize").max || sideMinS < document.getElementById("#minSideSize").min) {
+        if (isNaN(sideMinS) || sideMinS > document.getElementById("#minSideSize").max || sideMinS < document.getElementById("#minSideSize").min) {
             document.getElementById("#minSideSize").style="border-color:red";
             invalid = true;
         }
@@ -100,15 +100,26 @@ function startGame() {
     document.getElementById("newGame").hidden = true;
     document.getElementById("duringGame").hidden = false;
     gameStarted = true;
-    document.getElementById("inventoryView").hidden = false;
+    document.getElementById("inventoryView").classList.remove("d-none");;
     document.getElementById("#outventory").hidden = false;
     document.getElementById("#stats").hidden = false;
-    document.getElementById("statView").hidden = false;
+    document.getElementById("statView").classList.remove("d-none");;
     mainInfo.id = "#explore";
     addInfo.id = "#empty";
+    stats.health = stats.maxHealth;
     stats.strength = str;
     stats.dexterity = dex;
     stats.defense = def;
+    stats.enemiesDefeeted = 0;
+    escaped = false;
+    isAlive = true;
+    isPaused = false;
+    inFight = false;
+    hasWon = false;
+    player.x = 0;
+    player.y = 0;
+    player.rotation = 0;
+    fight.fightEnded();
     showStats();
     showInventory();
     localise();
@@ -158,8 +169,8 @@ async function main() {
     mainInfo.id = "#newGame";
     addInfo.id = "#empty";
 
-    document.getElementById("inventoryView").hidden = true;
-    document.getElementById("statView").hidden = true;
+    document.getElementById("inventoryView").classList.add("d-none");
+    document.getElementById("statView").classList.add("d-none");
     document.getElementById("#outventory").hidden = true;
     document.getElementById("#stats").hidden = true;
     colorPick = document.getElementById("gameColor");
@@ -291,11 +302,12 @@ function playerDead() {
     addInfo.id = "#empty";
     isAlive = false;
     player.rotation = 3;
-    document.getElementById("inventoryView").hidden = true;
-    document.getElementById("statView").hidden = true;
+    document.getElementById("inventoryView").classList.add("d-none");
+    document.getElementById("statView").classList.add("d-none");
     document.getElementById("#outventory").hidden = true;
     document.getElementById("#stats").hidden = true;
-    document.getElementById("duringGame").hidden = false;
+    document.getElementById("duringGame").hidden = true;
+    document.getElementById("newGame").hidden = false;
 }
 
 function gameFinished() {
@@ -303,8 +315,8 @@ function gameFinished() {
     mainInfo.id = "#gameWon";
     addInfo.id = countScore();;
     localise();
-    document.getElementById("inventoryView").hidden = true;
-    document.getElementById("statView").hidden = true;
+    document.getElementById("inventoryView").classList.add("d-none");
+    document.getElementById("statView").classList.add("d-none");
     document.getElementById("#outventory").hidden = true;
     document.getElementById("#stats").hidden = true;
     document.getElementById("duringGame").hidden = true;
@@ -542,16 +554,16 @@ function showInventory() {
     const div = document.getElementById("inventoryView");
     let inv = inventory.getItems();
     div.innerHTML = "";
-    inv.forEach((x) => div.innerHTML += `<nobr><a name="translatable" id=#${x[0]}>#${x[0]}</a>: ${x[1]}</nobr>`)
+    inv.forEach((x) => div.innerHTML += `<a class="translatable" id=#${x[0]}>#${x[0]}</a>: ${x[1]}<br>`)
     localise();
 }
 function showStats() {
     const div = document.getElementById("statView");
     div.innerHTML = "";
-    div.innerHTML += `<nobr><a name="translatable" id=#level></a>: ${stats.level}</nobr>`
-    div.innerHTML += `<nobr><a name="translatable" id=#strength>#strength</a>: ${stats.strength}</nobr>`
-    div.innerHTML += `<nobr><a name="translatable" id=#defense>#defense</a>: ${stats.defense}</nobr>`
-    div.innerHTML += `<nobr><a name="translatable" id=#dexterity>#dexterity</a>: ${stats.dexterity}</nobr>`
+    div.innerHTML += "<a class='translatable' id=#level></a>: " + stats.level;
+    div.innerHTML += `<br><a class="translatable" id=#strength>#strength</a>: ${stats.strength}`;
+    div.innerHTML += `<br><a class="translatable" id=#defense>#defense</a>: ${stats.defense}`;
+    div.innerHTML += `<br><a class="translatable" id=#dexterity>#dexterity</a>: ${stats.dexterity}`;
     document.getElementById("health").innerText = stats.health;
     document.getElementById("maxHealth").innerText = stats.maxHealth;
     document.getElementById("exp").innerText = stats.experience;
@@ -566,24 +578,24 @@ function setLang(l) {
 
 async function localise() {
     //console.log(localisationFile);
-    let translatables = document.getElementsByName("translatable");
-    translatables.forEach((x) => {
-        if (localisationFile[lang][x.id] != undefined) {
-            x.innerText = localisationFile[lang][x.id]
+    let translatables = document.getElementsByClassName("translatable");
+    for (let i = 0; i < translatables.length; i++) {
+        if (localisationFile[lang][translatables[i].id] != undefined) {
+            translatables[i].innerText = localisationFile[lang][translatables[i].id]
         }
         else {
-            x.innerText = x.id;
+            translatables[i].innerText = translatables[i].id;
         }
-    })
-    translatables = document.getElementsByName("translatableForm");
-    translatables.forEach((x) => {
-        if (localisationFile[lang][x.id] != undefined) {
-            x.placeholder = localisationFile[lang][x.id]
+    }
+    translatables = document.getElementsByClassName("translatableForm");
+    for (let i = 0; i < translatables.length; i++) {
+        if (localisationFile[lang][translatables[i].id] != undefined) {
+            translatables[i].placeholder = localisationFile[lang][translatables[i].id]
         }
         else {
-            x.placeholder = x.id;
+            translatables[i].placeholder = translatables[i].id;
         }
-    })
+    }
 }
 
 function initShaderProgram(gl, vsSource, fsSource) {

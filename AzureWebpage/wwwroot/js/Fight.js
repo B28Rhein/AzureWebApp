@@ -209,12 +209,12 @@ class Fight {
     }
     wait() {
         if (this.isWaiting) {
-            setTimeout(() => {this.playerEscaped === false ? this.changeTurn() : this.endFight()}, 3000);
+            setTimeout(() => {this.playerEscaped === false ? this.changeTurn() : this.endFight()}, 3000/parseInt(document.getElementById("speedRange").value));
         }
     }
     enemyDead() {
         this.enemyTile.enemyDefeated();
-        player.enemyDefeeted++;
+        this.player.enemyDefeeted++;
         this.endFight();
     }
     endFight() {
