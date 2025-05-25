@@ -115,7 +115,6 @@ class Fight {
         }
         if (r > c) {
             var damage = Random.randomInteger(5, 15) * str / def;
-            damage = Math.round((damage + Number.EPSILON) * 100) / 100
             if (targetStats.isDefending) {
                 damage /= 2;
             }
@@ -135,6 +134,7 @@ class Fight {
                     damage *= 1.2;
                 }
             }
+            damage = Math.round((damage + Number.EPSILON) * 100) / 100
             targetStats.changeHealth(-damage);
             if (this.turnTaker === this.player) {
                 this.changeInfoText("#playerAttack", damage);

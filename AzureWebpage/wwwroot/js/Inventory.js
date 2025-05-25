@@ -31,6 +31,9 @@
         }
         return arr;
     }
+    clearInv() {
+        this.items = new Map();
+    }
 }
 
 export { Inventory };

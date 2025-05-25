@@ -69,6 +69,7 @@
     "#settings": "Settings",
     "#langChange": "Choose Language",
     "#outventoryAndStats": "Inventory and Stats",
+    "#speed": "Set fight Speed",
     "#empty": ""
   },
   "pl": {
@@ -141,6 +142,7 @@
     "#settings": "Ustawienia",
     "#langChange": "Wybierz Język",
     "#outventoryAndStats": "Ekwipunek i Statystyki",
+    "#speed": "Ustaw Prędkość walki",
     "#empty": ""
   },
   "fr": {
@@ -213,6 +215,7 @@
     "#settings": "Paramètres",
     "#langChange": "Choisir la langue",
     "#outventoryAndStats": "Inventaire et statistiques",
+    "#speed": "Définir la vitesse du combat",
     "#empty": ""
   }
 }

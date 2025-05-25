@@ -106,7 +106,7 @@ function startGame() {
     document.getElementById("statView").classList.remove("d-none");;
     mainInfo.id = "#explore";
     addInfo.id = "#empty";
-    stats.health = stats.maxHealth;
+    stats.changeHealth(100000);
     stats.strength = str;
     stats.dexterity = dex;
     stats.defense = def;
@@ -119,9 +119,10 @@ function startGame() {
     player.x = 0;
     player.y = 0;
     player.rotation = 0;
-    fight.fightEnded();
-    showStats();
+    fight.endFight();
+    inventory.clearInv();
     showInventory();
+    showStats();
     localise();
 }
 
@@ -301,6 +302,7 @@ function playerDead() {
     mainInfo.id = "#playerDead";
     addInfo.id = "#empty";
     isAlive = false;
+    inFight = false;
     player.rotation = 3;
     document.getElementById("inventoryView").classList.add("d-none");
     document.getElementById("statView").classList.add("d-none");
