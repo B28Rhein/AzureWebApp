@@ -56,6 +56,11 @@ function startGame() {
             document.getElementById("#minSideSize").style="border-color:red";
             invalid = true;
         }
+        if (sideMinS > sideMaxS) {
+            document.getElementById("#maxSideSize").style = "border-color:red";
+            document.getElementById("#minSideSize").style = "border-color:red";
+            invalid = true;
+        }
     }
     if (invalid) {
         return;
