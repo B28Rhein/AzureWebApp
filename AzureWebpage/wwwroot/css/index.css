@@ -1,7 +1,6 @@
 ﻿body {
     font-family: "Courier New", Courier;
-    font-size: large;
     color: white;
-    font-size: calc(0.2rem + 0.9vw);
+    font-size: calc(0.75rem + 0.7vw);
 }
 
