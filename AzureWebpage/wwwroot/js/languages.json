@@ -54,6 +54,7 @@
     "#maxSideSize": "Length: 1-8",
     "#startGame": "Start new Game",
     "#colorPick": "Change Game Colour",
+    "#newGame": "Input settings to start new game",
     "#empty": ""
   },
   "pl": {
@@ -111,6 +112,7 @@
     "#maxSideSize": "Długość: 1-8",
     "#startGame": "Zacznij nową Grę",
     "#colorPick": "Zmień Kolor Gry",
+    "#newGame": "Wybierz ustawienia żeby zacząć grę",
     "#empty": ""
   },
   "fr": {
@@ -126,7 +128,7 @@
     "#fightInfo": "Informations sur le combat",
     "#playerAttack": "Vous avez frappé pour",
     "#playerAttackFail": "Vous avez manqué",
-    "#enemyAttackFail": "L'ennemi a raté sa cible en vous attaquant",
+    "#enemyAttackFail": "L'ennemi raté sa cible en vous attaquant",
     "#enemyAttack": "L'ennemi vous a frappé pour",
     "#playerDefended": "Vous préparez à une attaque",
     "#enemyDefended": "L'ennemi se prépare",
@@ -168,6 +170,7 @@
     "#maxSideSize": "Longueur : 1-8",
     "#startGame": "Démarrer une nouvelle partie",
     "#colorPick": "Changer la couleur du jeu",
+    "#newGame": "Sélectionnez paramètres pour nouvelle partie",
     "#empty": ""
   }
 }
