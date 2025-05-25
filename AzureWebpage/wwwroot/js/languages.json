@@ -64,6 +64,9 @@
     "#dexCrt": "1-10",
     "#defCrt": "1-10",
     "#charCrt": "Set starting player stats",
+    "#settings": "Settings",
+    "#langChange": "Choose Language",
+    "#outventoryAndStats": "Inventory and Stats",
     "#empty": ""
   },
   "pl": {
@@ -131,6 +134,9 @@
     "#dexCrt": "1-10",
     "#defCrt": "1-10",
     "#charCrt": "Wybierz początkowe statystyki gracza",
+    "#settings": "Ustawienia",
+    "#langChange": "Wybierz Język",
+    "#outventoryAndStats": "Ekwipunek i Statystyki",
     "#empty": ""
   },
   "fr": {
@@ -198,6 +204,9 @@
     "#dexCrt": "1-10",
     "#defCrt": "1-10",
     "#charCrt": "Définir les statistiques du joueur de départ",
+    "#settings": "Paramètres",
+    "#langChange": "Choisir la langue",
+    "#outventoryAndStats": "Inventaire et statistiques",
     "#empty": ""
   }
 }
