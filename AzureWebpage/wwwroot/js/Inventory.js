@@ -11,7 +11,7 @@
             this.items.set(item, count);
         }
         this.inventoryChangeEvent();
-        console.log(this.items)
+        //console.log(this.items)
     }
     removeItem(item, count) {
         this.items.set(item, this.items.get(item) - count);

@@ -17,7 +17,10 @@
 <body style="height:100%">
     <div class="container-fluid h-100">
         <div class="row min-vh-100">
-            <div class="col-sm bg-dark d-flex flex-column">
+            <div id="invOffcanvas" class="col-sm bg-dark d-flex flex-column offcanvas-md offcanvas-start text-white">
+                <div class="row justify-content-start">
+                    <button type="button" class="ms-2 mt-2 btn-close btn-close-white end" data-bs-dismiss="offcanvas" data-bs-target="#invOffcanvas"></button>
+                </div>
                 <a name="translatable" id="#outventory">#outventory</a>
                 <div class="row ms-4 mt-4 flex-grow-1 flex-column" id="inventoryView">
                 </div>
@@ -47,33 +50,53 @@
                     
                     </div>
                     <div class="d-sm-flex justify-content-center">
-                    <div class="btn-group-vertical" role="group" id="controls" style="width:33%">
-                        <div class="btn-group">
-                            <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
-                            <button class="btn btn-dark btn-lg" id="Up" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image" style="transform:rotate(270deg);"></button>
-                            <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
+                        <div class="d-sm-flex justify-content-center">
+                            <div class="row d-sm-none" style="height:100%">
+                                <div class="col">
+                                    <button class="btn btn-dark" id="#outventoryAndStats" data-bs-toggle="offcanvas" data-bs-target="#invOffcanvas" name="translatable">test</button>
+
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-dark" id="#settings" data-bs-toggle="offcanvas" data-bs-target="#offCanvasSettings" name="translatable">test</button>
+
+                                </div>
+                            </div>
+                            <div class=" btn-group-vertical" role="group" id="controls" style="width:33%">
+                                <div class="btn-group">
+                                    <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
+                                    <button class="btn btn-dark btn-lg" id="Up" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image" style="transform:rotate(270deg);"></button>
+                                    <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button class="btn btn-dark btn-lg" id="Left" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image" style="transform:rotate(180deg);"></button>
+                                    <button class="btn btn-dark btn-lg" id="Interact" style="width:33%"><img src="~/images/bullseye.svg" class="img-fluid" alt="Responsive image"></button>
+                                    <button class="btn btn-dark btn-lg" id="Right" style="width:33%;"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image"></button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
+                                    <button class="btn btn-dark btn-lg" id="Down" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid ro" alt="Responsive image" style="transform:rotate(90deg);"></button>
+                                    <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
+                                </div>
+                            </div>
+
                         </div>
                         
-                        <div class="btn-group">
-                            <button class="btn btn-dark btn-lg" id="Left" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image" style="transform:rotate(180deg);"></button>
-                            <button class="btn btn-dark btn-lg" id="Interact" style="width:33%"><img src="~/images/bullseye.svg" class="img-fluid" alt="Responsive image"></button>
-                            <button class="btn btn-dark btn-lg" id="Right" style="width:33%;"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image"></button>
-                        </div>
-                        <div class="btn-group">
-                            <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
-                            <button class="btn btn-dark btn-lg" id="Down" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid ro" alt="Responsive image" style="transform:rotate(90deg);"></button>
-                            <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
+                        <div class="btn-group" role="group" id="fightControls" hidden>
+                            <button class="btn btn-dark btn-lg" id="#attack" name="translatable"></button>
+                            <button class="btn btn-dark btn-lg" id="#defend" name="translatable"></button>
+                            <button class="btn btn-dark btn-lg" id="#run" name="translatable"></button>
+                            <button class="btn btn-dark btn-lg" id="#heal" name="translatable"></button>
                         </div>
                     </div>
-                    <div class="btn-group" role="group" id="fightControls" hidden>
-                        <button class="btn btn-dark btn-lg" id="#attack" name="translatable"></button>
-                        <button class="btn btn-dark btn-lg" id="#defend" name="translatable"></button>
-                        <button class="btn btn-dark btn-lg" id="#run" name="translatable"></button>
-                        <button class="btn btn-dark btn-lg" id="#heal" name="translatable"></button>
-                    </div>
-                </div>
                 </div>
                 <div id="newGame">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-dark" id="#settings" data-bs-toggle="offcanvas" data-bs-target="#offCanvasSettings" name="translatable">test</button>
+
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm">
                             <label class="col-form-label" for="#mainSize" id="#mainSizeLabel" name="translatable"></label>
@@ -126,14 +149,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm bg-dark">
+            <div id="offCanvasSettings" class="col-sm bg-dark offcanvas-md offcanvas-end">
+                <div class="row  justify-content-end">
+                    <button type="button" class=" mt-2 btn-close btn-close-white end" data-bs-dismiss="offcanvas" data-bs-target="#offCanvasSettings"></button>
+                    <h3 id="#settings" name="translatable" class="text-white"></h3>
+                </div>
+
                 <div class="row">
-                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:10%; transform:scaleY(0.75)" id="plBTN"><img src="~/images/poland.svg" class="img-fluid" alt="Responsive image"></button>
-                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:10%; transform:scaleY(0.75)" id="enBTN"><img src="~/images/united-kingdom.svg" class="img-fluid" alt="Responsive image"></button>
-                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:10%; transform:scaleY(0.75)" id="frBTN"><img src="~/images/france.svg" class="img-fluid" alt="Responsive image"></button>
+                    <h4 id="#langChange" name="translatable" class="text-white"></h4>
+                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:20%; transform:scaleY(0.75)" id="plBTN"><img src="~/images/poland.svg" class="img-fluid" alt="Responsive image"></button>
+                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:20%; transform:scaleY(0.75)" id="enBTN"><img src="~/images/united-kingdom.svg" class="img-fluid" alt="Responsive image"></button>
+                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:20%; transform:scaleY(0.75)" id="frBTN"><img src="~/images/france.svg" class="img-fluid" alt="Responsive image"></button>
                 </div>
                 <div>
-                    <label for="gameColor" class="form-label" id="#colorPick" name="translatable"></label>
+                    <h4 for="gameColor" class="form-label text-white" id="#colorPick" name="translatable"></h4>
                     <input type="color" class="form-control form-control-color" id="gameColor" value="#ffffff" title="Choose your color">
                 </div>
             </div>

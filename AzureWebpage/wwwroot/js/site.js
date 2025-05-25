@@ -35,10 +35,10 @@ const addInfo = document.getElementById("#additionalInfo");
 main();
 
 function startGame() {
-    let mainL = document.getElementById("#mainSize").value;
-    let str = document.getElementById("#strCrt").value;
-    let dex = document.getElementById("#dexCrt").value;
-    let def = document.getElementById("#defCrt").value;
+    let mainL = parseInt(document.getElementById("#mainSize").value);
+    let str = parseInt(document.getElementById("#strCrt").value);
+    let dex = parseInt(document.getElementById("#dexCrt").value);
+    let def = parseInt(document.getElementById("#defCrt").value);
     document.getElementById("#mainSize").style = "";
     document.getElementById("#strCrt").style = "";
     document.getElementById("#dexCrt").style = "";
@@ -52,27 +52,38 @@ function startGame() {
     let sideMinS = 0;
     let sideT = document.getElementById("SideTracks").checked;
     let invalid = false;
-    if (mainL == "") {
+    let min = document.getElementById("#mainSize").min;
+    let max = document.getElementById("#mainSize").max;
+    if (mainL == "" || mainL > max || mainL < min) {
         document.getElementById("#mainSize").style = "border-color:red";
         invalid = true;
-    } if (str == "") {
+    }
+    min = document.getElementById("#strCrt").min;
+    max = document.getElementById("#strCrt").max;
+    if (str == "" || str > max || str < min) {
         document.getElementById("#strCrt").style = "border-color:red";
         invalid = true;
-    } if (dex == "") {
+    }
+    min = document.getElementById("#dexCrt").min;
+    max = document.getElementById("#dexCrt").max;
+    if (dex == "" || dex > max || dex < min) {
         document.getElementById("#dexCrt").style = "border-color:red";
         invalid = true;
-    } if (def == "") {
+    }
+    min = document.getElementById("#defCrt").min;
+    max = document.getElementById("#defCrt").max;
+    if (def == "" || def > max || def < min) {
         document.getElementById("#defCrt").style = "border-color:red";
         invalid = true;
     }
     if (sideT) {
         sideMaxS = document.getElementById("#maxSideSize").value;
         sideMinS = document.getElementById("#minSideSize").value;
-        if (sideMaxS == "") {
+        if (sideMaxS == "" || sideMaxS > document.getElementById("#maxSideSize").max || sideMaxS < document.getElementById("#maxSideSize").min) {
             document.getElementById("#maxSideSize").style = "border-color:red";
             invalid = true;
         }
-        if (sideMinS == "") {
+        if (sideMinS == "" || sideMinS > document.getElementById("#minSideSize").max || sideMinS < document.getElementById("#minSideSize").min) {
             document.getElementById("#minSideSize").style="border-color:red";
             invalid = true;
         }
@@ -100,7 +111,7 @@ function startGame() {
     stats.defense = def;
     showStats();
     showInventory();
-    localise(lang);
+    localise();
 }
 
 async function main() {
@@ -132,9 +143,9 @@ async function main() {
 
     //currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true, () => { gameFinished()}, 3, 0);
 
-    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, null, stats, () => { localise(lang)}, inventory);
+    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, null, stats, () => { localise()}, inventory);
 
-    title = new Fight(gl, Fight.titleTex, programInfo, projectionMatrix, null, null, () => { localise(lang) }, null);
+    title = new Fight(gl, Fight.titleTex, programInfo, projectionMatrix, null, null, () => { localise() }, null);
 
     //currentRoom = new Room(gl, programInfo, player, projectionMatrix);
     //currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
@@ -184,7 +195,7 @@ async function main() {
                         mainInfo.id = "#explore";
                         addInfo.id = "#empty";
                     }
-                    localise(lang);
+                    localise();
                 }
                 break;
             default:
@@ -193,7 +204,7 @@ async function main() {
     })
     showInventory();
     showStats();
-    localise(lang);
+    localise();
     requestAnimationFrame(renderLoop);
     
     
@@ -291,7 +302,7 @@ function gameFinished() {
     hasWon = true;
     mainInfo.id = "#gameWon";
     addInfo.id = countScore();;
-    localise(lang);
+    localise();
     document.getElementById("inventoryView").hidden = true;
     document.getElementById("statView").hidden = true;
     document.getElementById("#outventory").hidden = true;
@@ -386,7 +397,7 @@ function update() {
         inFight = true;
         mainInfo.id = "#fight";
         addInfo.id = "#" + tile.stats.type;
-        localise(lang);
+        localise();
         fight.newFight(tile);
     }
 }
@@ -512,7 +523,7 @@ function renderLoop() {
                 if (!inFight) {
                     mainInfo.innerText = "#explore";
                     addInfo.innerText = "";
-                    localise(lang);
+                    localise();
                 }
             }
         }
@@ -532,7 +543,7 @@ function showInventory() {
     let inv = inventory.getItems();
     div.innerHTML = "";
     inv.forEach((x) => div.innerHTML += `<nobr><a name="translatable" id=#${x[0]}>#${x[0]}</a>: ${x[1]}</nobr>`)
-    localise(lang);
+    localise();
 }
 function showStats() {
     const div = document.getElementById("statView");
@@ -545,15 +556,15 @@ function showStats() {
     document.getElementById("maxHealth").innerText = stats.maxHealth;
     document.getElementById("exp").innerText = stats.experience;
     document.getElementById("maxExp").innerText = stats.toNextLevel;
-    localise(lang);
+    localise();
 }
 
 function setLang(l) {
     lang = l;
-    localise(lang);
+    localise();
 }
 
-async function localise(lang) {
+async function localise() {
     //console.log(localisationFile);
     let translatables = document.getElementsByName("translatable");
     translatables.forEach((x) => {
@@ -638,5 +649,7 @@ function sideTracksChanged() {
         b.disabled = true;
         c.disabled = true;
     }
-    localise(lang);
+    localise();
 }
+
+export { localise };
