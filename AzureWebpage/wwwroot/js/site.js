@@ -18,10 +18,14 @@ var inventory;
 var stats;
 var localisationFile;
 var fight;
+var title;
+var colorPick;
+var escaped = false;
 var isAlive = true;
 var isPaused = false;
 var inFight = false;
 var hasWon = false;
+var gameStarted = false;
 var enemies = [];
 var lang = "en";
 var canMove = true;
@@ -30,9 +34,46 @@ const mainInfo = document.getElementById("#mainInfo");
 const addInfo = document.getElementById("#additionalInfo");
 main();
 
+function startGame() {
+    let mainL = document.getElementById("#mainSize").value;
+    
+    let sideMaxS = 0;
+    let sideMinS = 0;
+    let sideT = document.getElementById("SideTracks").checked;
+    let invalid = false;
+    if (mainL == "") {
+        document.getElementById("#mainSize").style = "border-color:red";
+        invalid = true;
+    }
+    if (sideT) {
+        sideMaxS = document.getElementById("#maxSideSize").value;
+        sideMinS = document.getElementById("#minSideSize").value;
+        if (sideMaxS == "") {
+            document.getElementById("#maxSideSize").style = "border-color:red";
+            invalid = true;
+        }
+        if (sideMinS == "") {
+            document.getElementById("#minSideSize").style="border-color:red";
+            invalid = true;
+        }
+    }
+    if (invalid) {
+        return;
+    }
+    currentRoom = Room.genRoom(gl, title.programInfo, player, projectionMatrix, inventory, mainL, enemies, sideT, () => { gameFinished() }, sideMaxS, sideMinS);
+    document.getElementById("newGame").hidden = true;
+    document.getElementById("duringGame").hidden = false;
+    gameStarted = true;
+    document.getElementById("inventoryView").hidden = false;
+    document.getElementById("#outventory").hidden = false;
+    document.getElementById("#stats").hidden = false;
+    document.getElementById("statView").hidden = false;
+    mainInfo.id = "#explore";
+    addInfo.id = "#empty";
+    localise(lang);
+}
+
 async function main() {
-
-
 
     gl = map.getContext("webgl2");
 
@@ -42,8 +83,8 @@ async function main() {
     }
     
     const programInfo = SetUpRenderer(gl);
-    setUpButtons();
     localisationFile = await fetch("./js/languages.json").then((x) => localisationFile = x.json());
+    setUpButtons();
 
 
     inventory = new Inventory(showInventory);
@@ -59,9 +100,11 @@ async function main() {
     player = new Tile(0, 0, playerTex, gl, programInfo, 0);
 
 
-    currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true, () => { gameFinished()});
+    //currentRoom = Room.genRoom(gl, programInfo, player, projectionMatrix, inventory, 3, enemies, true, () => { gameFinished()}, 3, 0);
 
-    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, enemies[0], stats, () => { localise(lang)}, inventory);
+    fight = new Fight(gl, Fight.unknownTex, programInfo, projectionMatrix, null, stats, () => { localise(lang)}, inventory);
+
+    title = new Fight(gl, Fight.titleTex, programInfo, projectionMatrix, null, null, () => { localise(lang) }, null);
 
     //currentRoom = new Room(gl, programInfo, player, projectionMatrix);
     //currentRoom.setTile(new Blockade(-4, -3, tableTex, gl, programInfo, 0));
@@ -71,8 +114,14 @@ async function main() {
 
     //currentRoom.placeChest(3, 3, ["key", 2, "sword", 1, "arrow", 50, "rostbef", 12], inventory);
 
-    mainInfo.id = "#explore";
+    mainInfo.id = "#newGame";
     addInfo.id = "#empty";
+
+    document.getElementById("inventoryView").hidden = true;
+    document.getElementById("statView").hidden = true;
+    document.getElementById("#outventory").hidden = true;
+    document.getElementById("#stats").hidden = true;
+    colorPick = document.getElementById("gameColor");
 
     document.addEventListener("keydown", function (event) {
         if (event.defaultPrevented) {
@@ -95,7 +144,7 @@ async function main() {
                 interact(programInfo);
                 break;
             case "Escape":
-                if (isAlive){
+                if (isAlive && gameStarted && !hasWon && !inFight){
                     isPaused = (isPaused == true) ? false : true;
                     if (isPaused) {
                         mainInfo.id = "#paused";
@@ -126,6 +175,8 @@ function setUpButtons() {
     document.getElementById("Left").onclick = moveLeft;
     document.getElementById("Right").onclick = moveRight;
     document.getElementById("Interact").onclick = interact;
+    document.getElementById("SideTracks").onchange = () => { sideTracksChanged() };
+    document.getElementById("#startGame").onclick = () => { startGame() };
     document.getElementById("enBTN").onclick = function () { setLang("en") };
     document.getElementById("plBTN").onclick = function () { setLang("pl")};
     document.getElementById("frBTN").onclick = function () { setLang("fr") };
@@ -199,6 +250,11 @@ function playerDead() {
     addInfo.id = "#empty";
     isAlive = false;
     player.rotation = 3;
+    document.getElementById("inventoryView").hidden = true;
+    document.getElementById("statView").hidden = true;
+    document.getElementById("#outventory").hidden = true;
+    document.getElementById("#stats").hidden = true;
+    document.getElementById("duringGame").hidden = false;
 }
 
 function gameFinished() {
@@ -206,58 +262,64 @@ function gameFinished() {
     mainInfo.id = "#gameWon";
     addInfo.id = countScore();;
     localise(lang);
+    document.getElementById("inventoryView").hidden = true;
+    document.getElementById("statView").hidden = true;
+    document.getElementById("#outventory").hidden = true;
+    document.getElementById("#stats").hidden = true;
+    document.getElementById("duringGame").hidden = true;
+    document.getElementById("newGame").hidden = false;
 }
 
 function countScore() {
     let score = 0;
-    score += stats.enemyDefeeted * 5;
+    score += stats.enemiesDefeeted * 5;
     let items = inventory.getItems();
-    for (let i = 0; i < items.length; i+=2) {
-        switch (items[i]) {
+    for (let i = 0; i < items.length; i++) {
+        switch (items[i][0]) {
             case "sword":
-                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                items[i][1] > 1 ? score += 2 * items[i][1] : score;
                 break;
             case "pants":
-                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                items[i][1] > 1 ? score += 2 * items[i][1] : score;
                 break;
             case "tunic":
-                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                items[i][1] > 1 ? score += 2 * items[i][1] : score;
                 break;
             case "dagger":
-                items[i + 1] > 1 ? score += 2 * items[i + 1] : score;
+                items[i][1] > 1 ? score += 2 * items[i][1] : score;
                 break;
             case "sadlinEar":
-                score += items[i + 1] * 5;
+                score += items[i][1] * 5;
                 break;
             case "goldCoin":
-                score += items[i + 1] * 10;
+                score += items[i][1] * 10;
                 break;
             case "silverTrinket":
-                score += items[i + 1] * 30;
+                score += items[i][1] * 30;
                 break;
             case "slimeGoo":
-                score += items[i + 1] * 4;
+                score += items[i][1] * 4;
                 break;
             case "bone":
-                score += items[i + 1] * 7;
+                score += items[i][1] * 7;
                 break;
             case "chickenFeed":
-                score += items[i + 1] * 100;
+                score += items[i][1] * 100;
                 break;
             case "chickenMeat":
-                score += items[i + 1] * 50;
+                score += items[i][1] * 50;
                 break;
             case "feather":
-                score += items[i + 1] * 15;
+                score += items[i][1] * 15;
                 break;
             case "goldenRing":
-                score += items[i + 1] * 20;
+                score += items[i][1] * 20;
                 break;
             case "healingPot":
-                score += items[i + 1] * 3;
+                score += items[i][1] * 3;
                 break;
             default:
-                score += items[i + 1];
+                score += items[i][1];
                 break;
 
         }
@@ -383,41 +445,54 @@ function interact(programInfo) {
 
 function renderLoop() {
     resizeCanvasToDisplaySize(gl.canvas);
+    let tokens = colorPick.value.match(/[0-9a-z]{2}/gi);
+    let color = tokens.map(t => parseInt(t, 16));
+    color[0] /= 256;
+    color[1] /= 256;
+    color[2] /= 256;
+    color.push(1);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     document.getElementById("controls").hidden = inFight;
-    if (!isPaused && isAlive && !hasWon) {
-        if (!inFight) {
-            currentRoom.drawRoom(projectionMatrix);
-            player.draw(projectionMatrix);
-            update();
-            //showInventory();
-            //localise(lang);
+    if (gameStarted) {
+        if (!isPaused && isAlive && !hasWon) {
+            if (!inFight) {
+                escaped = false;
+                currentRoom.drawRoom(projectionMatrix, color);
+                player.draw(projectionMatrix, color);
+                update();
+                //showInventory();
+                //localise(lang);
+            }
+            else {
+                fight.drawFight(color);
+                inFight = !fight.fightEnded;
+                if (fight.playerEscaped == true && !escaped) {
+                    let t;
+                    let i = 3;
+                    do {
+                        t = currentRoom.getFreeTileInDistance(i, player.x, player.y);
+                        i++;
+                    } while (t == undefined);
+                    player.x = t.x;
+                    player.y = t.y;
+                    escaped = true;
+                }
+                if (!inFight) {
+                    mainInfo.innerText = "#explore";
+                    addInfo.innerText = "";
+                    localise(lang);
+                }
+            }
         }
         else {
-            fight.drawFight();
-            inFight = !fight.fightEnded;
-            if (fight.playerEscaped == true) {
-                let t;
-                let i = 3;
-                do {
-                    t = currentRoom.getFreeTileInDistance(i, player.x, player.y);
-                    i++;
-                } while (t == undefined);
-                player.x = t.x;
-                player.y = t.y;
-            }
-            if (!inFight) {
-                mainInfo.innerText = "#explore";
-                addInfo.innerText = "";
-                localise(lang);
-            }
+            currentRoom.drawRoom(projectionMatrix, color);
+            player.draw(projectionMatrix, color);
         }
     }
     else {
-        currentRoom.drawRoom(projectionMatrix);
-        player.draw(projectionMatrix);
+        title.drawFight(color);
     }
     requestAnimationFrame(renderLoop);
 }
@@ -457,6 +532,15 @@ async function localise(lang) {
         }
         else {
             x.innerText = x.id;
+        }
+    })
+    translatables = document.getElementsByName("translatableForm");
+    translatables.forEach((x) => {
+        if (localisationFile[lang][x.id] != undefined) {
+            x.placeholder = localisationFile[lang][x.id]
+        }
+        else {
+            x.placeholder = x.id;
         }
     })
 }
@@ -510,4 +594,19 @@ function resizeCanvasToDisplaySize(canvas) {
     }
 
     return needResize;
+}
+
+function sideTracksChanged() {
+    let a = document.getElementById("SideTracks").checked;
+    let b = document.getElementById("#maxSideSize");
+    let c = document.getElementById("#minSideSize");
+    if (a) {
+        b.disabled = false;
+        c.disabled = false;
+    }
+    else {
+        b.disabled = true;
+        c.disabled = true;
+    }
+    localise(lang);
 }

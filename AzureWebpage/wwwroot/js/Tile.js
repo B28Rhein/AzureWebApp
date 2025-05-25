@@ -24,9 +24,10 @@ class Tile {
         this.color = color;
     }
     
-    draw(projection) {
+    draw(projection, color) {
         let model = mat4.create();
-
+        this.color = color;
+        //console.log(color);
         mat4.translate(
             model,
             model,
@@ -62,8 +63,14 @@ class Tile {
         this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex.texture);
         this.gl.uniform1i(this.programInfo.uniformLocations.uSampler, 0);
+        try {
 
-        this.gl.uniform4fv(this.programInfo.uniformLocations.Color, this.color);
+            this.gl.uniform4fv(this.programInfo.uniformLocations.Color, this.color);
+        }
+        catch {
+            this.gl.uniform4fv(this.programInfo.uniformLocations.Color, [1, 1, 1, 1]);
+
+        }
 
         {
             const offset = 0;

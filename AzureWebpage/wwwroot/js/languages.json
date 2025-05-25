@@ -45,6 +45,15 @@
     "#paused": "The game is Paused",
     "#playerDead": "You Are Dead",
     "#gameWon": "You won, you have achieved a score of:",
+    "#mainSizeLabel": "Length of Main Path",
+    "#mainSize": "Length: 3-10",
+    "#maxSideSizeLabel": "Maximal length of side Tracks",
+    "#minSideSizeLabel": "Minimal length of side Tracks",
+    "#sideTracks": "Enable Side Tracks",
+    "#minSideSize": "Length: 0-3",
+    "#maxSideSize": "Length: 1-8",
+    "#startGame": "Start new Game",
+    "#colorPick": "Change Game Colour",
     "#empty": ""
   },
   "pl": {
@@ -93,6 +102,15 @@
     "#paused": "Gra jest Wstrzymana",
     "#playerDead": "Zginąłeś",
     "#gameWon": "Wygrałeś, osiągnąłeś wynik:",
+    "#mainSizeLabel": "Długość głównej ścieżki",
+    "#mainSize": "Długość: 3-10",
+    "#maxSideSizeLabel": "Maksymalna długość ścieżki pobocznej",
+    "#minSideSizeLabel": "Minimalna długość ścieżki pobocznej",
+    "#sideTracks": "Włącz ścieżki poboczne",
+    "#minSideSize": "Długość: 0-3",
+    "#maxSideSize": "Długość: 1-8",
+    "#startGame": "Zacznij nową Grę",
+    "#colorPick": "Zmień Kolor Gry",
     "#empty": ""
   },
   "fr": {
@@ -141,6 +159,15 @@
     "#paused": "Le jeu est en pause",
     "#playerDead": "Tu es mort",
     "#gameWon": "Vous avez gagné, vous avez obtenu un score de :",
+    "#mainSizeLabel": "Longueur du chemin principal",
+    "#mainSize": "Longueur: 3-10",
+    "#maxSideSizeLabel": "Longueur maximale des voies secondaires",
+    "#minSideSizeLabel": "Longueur minimale des voies secondaires",
+    "#sideTracks": "Activer les voies secondaires",
+    "#minSideSize": "Longueur : 0-3",
+    "#maxSideSize": "Longueur : 1-8",
+    "#startGame": "Démarrer une nouvelle partie",
+    "#colorPick": "Changer la couleur du jeu",
     "#empty": ""
   }
 }

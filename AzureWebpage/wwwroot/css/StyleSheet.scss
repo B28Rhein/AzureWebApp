@@ -1,0 +1,5 @@
+﻿@import '../lib/bootstrap/dist/scss/bootstrap.scss';
+
+.title {
+    @include font-size(4rem);
+}

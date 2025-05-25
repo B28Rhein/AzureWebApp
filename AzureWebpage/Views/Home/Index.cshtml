@@ -10,7 +10,6 @@
             crossorigin="anonymous"
             defer></script>
     <script src="~/js/site.js" type="module" id="s" ></script>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
     <title>@ViewData["Title"] - AzureWebpage</title>
@@ -29,35 +28,36 @@
             <div class="col-sm bg-black text-center justify-content-center">
                 <a id="#mainInfo" name="translatable"></a><a id="#additionalInfo" name="translatable"></a>
                 <canvas id="gl-canvas" width="640" height="490" style="width:100%"></canvas>
-                <div class="container-fluid">
-                    <div class="row text-center" id="fightInfoDiv" hidden>
-                        <nobr><a id="#fightInfo" name="translatable"></a> <a id="fightInfo"></a></nobr>
-                    </div>
-                    <div class="row text-center">
-                        <div class="col-sm">
-                            <a id="#health" name="translatable">#health</a> <a id="health"></a>/<a id="maxHealth"></a>
-                            <div id="enemyHealthDiv" hidden>
-                                <a id="#enemy_health" name="translatable"></a> <a id="enemyHealth"></a>/<a id="maxEnemyHealth"></a>
+                <div id="duringGame" hidden>
+                    <div class="container-fluid">
+                        <div class="row text-center" id="fightInfoDiv" hidden>
+                            <nobr><a id="#fightInfo" name="translatable"></a> <a id="fightInfo"></a></nobr>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-sm">
+                                <a id="#health" name="translatable">#health</a> <a id="health"></a>/<a id="maxHealth"></a>
+                                <div id="enemyHealthDiv" hidden>
+                                    <a id="#enemy_health" name="translatable"></a> <a id="enemyHealth"></a>/<a id="maxEnemyHealth"></a>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <a id="#exp" name="translatable">#exp</a> <a id="exp"></a>/<a id="maxExp"></a>
                             </div>
                         </div>
-                        <div class="col-sm">
-                            <a id="#exp" name="translatable">#exp</a> <a id="exp"></a>/<a id="maxExp"></a>
-                        </div>
-                    </div>
                     
-                </div>
-                <div class="d-sm-flex justify-content-center">
+                    </div>
+                    <div class="d-sm-flex justify-content-center">
                     <div class="btn-group-vertical" role="group" id="controls" style="width:33%">
                         <div class="btn-group">
                             <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
-                            <button class="btn btn-dark btn-lg" id="Up" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid ro" alt="Responsive image" style="transform:rotate(270deg);"></button>
+                            <button class="btn btn-dark btn-lg" id="Up" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image" style="transform:rotate(270deg);"></button>
                             <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
                         </div>
                         
                         <div class="btn-group">
-                            <button class="btn btn-dark btn-lg" id="Left" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid ro" alt="Responsive image" style="transform:rotate(180deg);"></button>
-                            <button class="btn btn-dark btn-lg" id="Interact" style="width:33%"><img src="~/images/bullseye.svg" class="img-fluid ro" alt="Responsive image"></button>
-                            <button class="btn btn-dark btn-lg" id="Right" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image"></button>
+                            <button class="btn btn-dark btn-lg" id="Left" style="width:33%"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image" style="transform:rotate(180deg);"></button>
+                            <button class="btn btn-dark btn-lg" id="Interact" style="width:33%"><img src="~/images/bullseye.svg" class="img-fluid" alt="Responsive image"></button>
+                            <button class="btn btn-dark btn-lg" id="Right" style="width:33%;"><img src="~/images/right-arrow.svg" class="img-fluid" alt="Responsive image"></button>
                         </div>
                         <div class="btn-group">
                             <button class="btn btn-dark btn-lg" disabled style="width:33%"></button>
@@ -71,16 +71,54 @@
                         <button class="btn btn-dark btn-lg" id="#run" name="translatable"></button>
                     </div>
                 </div>
-                
+                </div>
+                <div id="newGame">
+                    <div class="row">
+                        <div class="col-sm">
+                            <label class="col-form-label" for="#mainSize" id="#mainSizeLabel" name="translatable"></label>
+                            <input class="form-control" type="number" id="#mainSize" placeholder="#mainSize" name="translatableForm" min="3" max="10" />
+
+                        </div>
+                        <div class="col-sm">
+                            <br />
+                            <nobr>
+                                <input class="btn-check" type="checkbox" id="SideTracks" name="translatableForm" onchange="sideTracksChanged()" />
+                                <label class="btn btn-dark" for="SideTracks" id="#sideTracks" name="translatable"></label>
+                            </nobr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+
+                            <label class="col-form-label" for="#maxSideSize" id="#maxSideSizeLabel" name="translatable"></label>
+                            <input class="form-control" type="number" id="#maxSideSize" name="translatableForm" min="1" max="8" disabled />
+                        </div>
+                        <div class="col-sm">
+
+                            <label class="col-form-label" for="#minSideSize" id="#minSideSizeLabel" name="translatable"></label>
+                            <input class="form-control" type="number" id="#minSideSize" name="translatableForm" min="0" max="3" disabled />
+                        </div>
+                    </div>
+                    <div>
+                        <br />
+                        <button class="btn btn-dark btn-lg" id="#startGame" name="translatable"></button>
+                    </div>
+                </div>
             </div>
             <div class="col-sm bg-dark">
-                <button class="btn-light" id="plBTN">Polish</button>
-                <button class="btn-light" id="enBTN">English</button>
-                <button class="btn-light" id="frBTN">French</button>
+                <div class="row">
+                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:10%; transform:scaleY(0.75)" id="plBTN"><img src="~/images/poland.svg" class="img-fluid" alt="Responsive image"></button>
+                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:10%; transform:scaleY(0.75)" id="enBTN"><img src="~/images/united-kingdom.svg" class="img-fluid" alt="Responsive image"></button>
+                    <button class="btn btn-dark btn-sm border-1 border-dark" style="width:10%; transform:scaleY(0.75)" id="frBTN"><img src="~/images/france.svg" class="img-fluid" alt="Responsive image"></button>
+                </div>
+                <div>
+                    <label for="gameColor" class="form-label" id="#colorPick" name="translatable"></label>
+                    <input type="color" class="form-control form-control-color" id="gameColor" value="#ffffff" title="Choose your color">
+                </div>
             </div>
         </div>
         
     </div>
-    
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

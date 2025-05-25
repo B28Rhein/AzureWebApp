@@ -52,7 +52,7 @@ class Room {
             [10, 10, 10, 10, 10, 10, 100, 50]
         )
     }
-    static genRoom(gl, programInfo, player, projection, inventory, roomCounter, globalEnemyList, sideTracks, endEvent, neighbour = -1, neighbourRoom = null, firstRoom = true, mainTrack = true) {
+    static genRoom(gl, programInfo, player, projection, inventory, roomCounter, globalEnemyList, sideTracks, endEvent, maxSideTrackLen, minSideTrackLen, neighbour = -1, neighbourRoom = null, firstRoom = true, mainTrack = true) {
         let newRoom = new Room(gl, programInfo, player, projection);
 
         let isFinal = (roomCounter == 0 ? true : false);
@@ -81,6 +81,8 @@ class Room {
                     globalEnemyList,
                     sideTracks,
                     endEvent,
+                    maxSideTrackLen,
+                    minSideTrackLen,
                     (4 - newDoorSide) % 2 == 0 ? (newDoorSide == 2 ? 0 : 2) : 4 - newDoorSide, newRoom, false, mainTrack),
             true);
         }
@@ -92,8 +94,8 @@ class Room {
                 do {
                     side = Random.randomInteger(0, 3);
                 } while (side == neighbour || side == newDoorSide || sideDoors.includes(side));
-                let len = Random.randomInteger(0, 3);
-                newRoom.placeDoor(side, inventory, Room.genRoom(gl, programInfo, player, projection, inventory, len, globalEnemyList, false, null, (4 - side) % 2 == 0 ? (side == 2 ? 0 : 2) : 4 - side, newRoom, false, false), true);
+                let len = Random.randomInteger(minSideTrackLen, maxSideTrackLen);
+                newRoom.placeDoor(side, inventory, Room.genRoom(gl, programInfo, player, projection, inventory, len, globalEnemyList, false, null, maxSideTrackLen, minSideTrackLen, (4 - side) % 2 == 0 ? (side == 2 ? 0 : 2) : 4 - side, newRoom, false, false), true);
             }
         }
 
@@ -219,10 +221,10 @@ class Room {
         return this.tiles[(y + 5) * 14 + (x + 6)].blockade;
     }
 
-    drawRoom(projection) {
+    drawRoom(projection, color) {
         this.tiles.forEach((x) => {
             if (x.x != this.player.x || x.y != this.player.y) {
-                x.draw(projection);
+                x.draw(projection, color);
             }
         });
     }

@@ -3,6 +3,7 @@ import { Tile } from "./Tile.js";
 import { Random } from "./Random.js";
 class Fight {
     static unknownTex;
+    static titleTex;
     static goblinTex;
     static skellyTex;
     static slimeTex;
@@ -15,6 +16,7 @@ class Fight {
         Fight.skellyTex = new Texture(gl, "../images/skelly_fight.png");
         Fight.slimeTex = new Texture(gl, "../images/slime_fight.png");
         Fight.chickenTex = new Texture(gl, "../images/chicken_fight.png");
+        Fight.titleTex = new Texture(gl, "../images/title_screen.png");
         Fight.fightInfo = document.getElementById("#fightInfo");
     }
     constructor(gl, tex, programInfo, projection, enemy, player, localisationFunc, inventory) {
@@ -31,13 +33,14 @@ class Fight {
         this.enemyTile = enemy;
         this.inventory = inventory;
     }
-    drawFight() {
-        this.fightView.draw(this.projection);
+    drawFight(color) {
+        this.fightView.draw(this.projection, color);
     }
     newFight(enemy) {
         this.turn = 0;
         this.fightEnded = false;
         this.playerEscaped = false;
+        this.isWaiting = false;
         switch (enemy.stats.type) {
             case "goblin":
                 this.fightView.tex = Fight.goblinTex;
@@ -79,6 +82,8 @@ class Fight {
 
         this.turn++;
         this.turnTaker === this.player ? this.turnTaker = this.enemy : this.turnTaker = this.player;
+        this.isWaiting = false;
+
         if (this.turnTaker.isDefending) {
             this.turnTaker.isDefending = false;
         }
@@ -187,7 +192,6 @@ class Fight {
     }
     wait() {
         if (this.isWaiting) {
-            this.isWaiting = false;
             setTimeout(() => {this.playerEscaped === false ? this.changeTurn() : this.endFight()}, 3000);
         }
     }
