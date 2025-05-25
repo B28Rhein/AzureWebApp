@@ -55,6 +55,15 @@
     "#startGame": "Start new Game",
     "#colorPick": "Change Game Colour",
     "#newGame": "Input settings to start new game",
+    "#healing": "Healing for",
+    "#heal": "Heal",
+    "#strCrtLabel": "Strength",
+    "#dexCrtLabel": "Dexterity",
+    "#defCrtLabel": "Defense",
+    "#strCrt": "1-10",
+    "#dexCrt": "1-10",
+    "#defCrt": "1-10",
+    "#charCrt": "Set starting player stats",
     "#empty": ""
   },
   "pl": {
@@ -113,6 +122,15 @@
     "#startGame": "Zacznij nową Grę",
     "#colorPick": "Zmień Kolor Gry",
     "#newGame": "Wybierz ustawienia żeby zacząć grę",
+    "#healing": "Wyloczono za",
+    "#heal": "Leczenie",
+    "#strCrtLabel": "Siła",
+    "#dexCrtLabel": "Zręczność",
+    "#defCrtLabel": "Obrona",
+    "#strCrt": "1-10",
+    "#dexCrt": "1-10",
+    "#defCrt": "1-10",
+    "#charCrt": "Wybierz początkowe statystyki gracza",
     "#empty": ""
   },
   "fr": {
@@ -171,6 +189,15 @@
     "#startGame": "Démarrer une nouvelle partie",
     "#colorPick": "Changer la couleur du jeu",
     "#newGame": "Sélectionnez paramètres pour nouvelle partie",
+    "#healing": "Guérison pour",
+    "#heal": "Guérir",
+    "#strCrtLabel": "Force",
+    "#dexCrtLabel": "Dextérité",
+    "#defCrtLabel": "Défense",
+    "#strCrt": "1-10",
+    "#dexCrt": "1-10",
+    "#defCrt": "1-10",
+    "#charCrt": "Définir les statistiques du joueur de départ",
     "#empty": ""
   }
 }

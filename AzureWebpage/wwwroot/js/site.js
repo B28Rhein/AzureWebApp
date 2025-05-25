@@ -36,13 +36,33 @@ main();
 
 function startGame() {
     let mainL = document.getElementById("#mainSize").value;
-    
+    let str = document.getElementById("#strCrt").value;
+    let dex = document.getElementById("#dexCrt").value;
+    let def = document.getElementById("#defCrt").value;
+    document.getElementById("#mainSize").style = "";
+    document.getElementById("#strCrt").style = "";
+    document.getElementById("#dexCrt").style = "";
+    document.getElementById("#defCrt").style = "";
+    document.getElementById("#maxSideSize").style = "";
+    document.getElementById("#minSideSize").style = "";
+    document.getElementById("#maxSideSize").style = "";
+    document.getElementById("#minSideSize").style = "";
+
     let sideMaxS = 0;
     let sideMinS = 0;
     let sideT = document.getElementById("SideTracks").checked;
     let invalid = false;
     if (mainL == "") {
         document.getElementById("#mainSize").style = "border-color:red";
+        invalid = true;
+    } if (str == "") {
+        document.getElementById("#strCrt").style = "border-color:red";
+        invalid = true;
+    } if (dex == "") {
+        document.getElementById("#dexCrt").style = "border-color:red";
+        invalid = true;
+    } if (def == "") {
+        document.getElementById("#defCrt").style = "border-color:red";
         invalid = true;
     }
     if (sideT) {
@@ -75,6 +95,11 @@ function startGame() {
     document.getElementById("statView").hidden = false;
     mainInfo.id = "#explore";
     addInfo.id = "#empty";
+    stats.strength = str;
+    stats.dexterity = dex;
+    stats.defense = def;
+    showStats();
+    showInventory();
     localise(lang);
 }
 
@@ -93,7 +118,7 @@ async function main() {
 
 
     inventory = new Inventory(showInventory);
-    stats = new Stats(100, 10, 15, 10, showStats, "player", () => { playerDead() });
+    stats = new Stats(100, 5, 5, 5, showStats, "player", () => { playerDead() });
 
     Room.init(gl);
     Blockade.init(gl);

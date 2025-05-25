@@ -67,6 +67,7 @@ class Fight {
         document.getElementById("#attack").onclick = () => { this.attack(this.player, this.enemy); };
         document.getElementById("#defend").onclick = () => { this.defend(this.player) };
         document.getElementById("#run").onclick = () => { this.run(); };
+        document.getElementById("#heal").onclick = () => { this.heal(); };
 
         this.updateEnemyHealth();
         document.getElementById("fightControls").hidden = false;
@@ -76,6 +77,9 @@ class Fight {
         document.getElementById("#attack").disabled = false;
         document.getElementById("#defend").disabled = false;
         document.getElementById("#run").disabled = false;
+        if (this.inventory.contains("healingPot")) {
+            document.getElementById("#heal").disabled = false;
+        }
     }
     changeTurn() {
         this.changeInfoText("#fightInfo", "");
@@ -168,10 +172,22 @@ class Fight {
         this.isWaiting = true;
         this.wait();
     }
+    heal() {
+        let r = Random.randomInteger(5, 20);
+        this.changeInfoText("#healing", r);
+        this.player.changeHealth(r);
+        this.inventory.removeItem("healingPot", 1);
+        this.disableButtons();
+        this.isWaiting = true;
+        this.wait();
+    }
     playerTurn() {
         document.getElementById("#attack").disabled = false;
         document.getElementById("#defend").disabled = false;
         document.getElementById("#run").disabled = false;
+        if (this.inventory.contains("healingPot")) {
+            document.getElementById("#heal").disabled = false;
+        }
     }
     enemyTurn() {
         let r = Random.randomInteger(0, 100);
@@ -186,6 +202,7 @@ class Fight {
         document.getElementById("#attack").disabled = true;
         document.getElementById("#defend").disabled = true;
         document.getElementById("#run").disabled = true;
+        document.getElementById("#heal").disabled = true;
     }
     updateEnemyHealth() {
         document.getElementById("enemyHealth").innerText = this.enemy.health;
